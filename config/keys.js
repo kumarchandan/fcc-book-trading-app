@@ -2,6 +2,6 @@
 
 module.exports ={
     db: {
-        mongoURL: 'mongodb://localhost:27017/stockmarket-app'
+        mongoURL: 'mongodb://localhost:27017/book-trading-app'
     }
 }

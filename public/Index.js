@@ -63,7 +63,7 @@
 	var ReactDOM = __webpack_require__(/*! react-dom */ 115);
 	
 	var Index = __webpack_require__(/*! ./components/Index.react */ 241);
-	var Stock = __webpack_require__(/*! ./components/Stock.react */ 467);
+	var Books = __webpack_require__(/*! ./components/Books.react */ 470);
 	
 	// For Overall App - onTouchTap() for onClick
 	(0, _reactTapEventPlugin2.default)();
@@ -75,7 +75,7 @@
 	    React.createElement(
 	        _reactRouter.Route,
 	        { path: '/', component: Index },
-	        React.createElement(_reactRouter.IndexRoute, { component: Stock })
+	        React.createElement(_reactRouter.IndexRoute, { component: Books })
 	    )
 	), document.getElementById('content'));
 
@@ -28241,7 +28241,7 @@
 	                _MuiThemeProvider2.default,
 	                null,
 	                _react2.default.createElement(_AppBar2.default, {
-	                    title: 'App Title',
+	                    title: 'Book Trading App',
 	                    iconElementRight: _react2.default.createElement(
 	                        _IconMenu2.default,
 	                        {
@@ -44007,42 +44007,7 @@
 	exports.default = new Typography();
 
 /***/ },
-/* 467 */
-/*!***************************************!*\
-  !*** ./src/components/Stock.react.js ***!
-  \***************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _RaisedButton = __webpack_require__(/*! material-ui/RaisedButton */ 468);
-	
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	// components/Stock.react.js
-	
-	var React = __webpack_require__(/*! react */ 29);
-	//
-	
-	
-	var Stock = React.createClass({
-	    displayName: 'Stock',
-	
-	    //
-	    render: function render() {
-	        return React.createElement(
-	            'h3',
-	            null,
-	            'Hello'
-	        );
-	    }
-	});
-	
-	module.exports = Stock;
-
-/***/ },
+/* 467 */,
 /* 468 */
 /*!*********************************************!*\
   !*** ./~/material-ui/RaisedButton/index.js ***!
@@ -44520,6 +44485,42 @@
 	};
 	exports.default = RaisedButton;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./~/process/browser.js */ 2)))
+
+/***/ },
+/* 470 */
+/*!***************************************!*\
+  !*** ./src/components/Books.react.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _react = __webpack_require__(/*! react */ 29);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _RaisedButton = __webpack_require__(/*! material-ui/RaisedButton */ 468);
+	
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// components/Books.react.js
+	
+	var Books = _react2.default.createClass({
+	    displayName: 'Books',
+	
+	    //
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'h3',
+	            null,
+	            'All Books'
+	        );
+	    }
+	});
+	
+	module.exports = Books;
 
 /***/ }
 /******/ ]);

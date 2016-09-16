@@ -1,13 +1,14 @@
 {
-  "name": "flux-app-structure",
-  "app-url": "#",
+  "name": "book-trading-app",
+  "app-url": "",
   "version": "0.0.0",
   "private": true,
   "keywords": [
     "flux",
     "webpack",
     "express",
-    "react"
+    "react",
+    "book-trading-app"
   ],
   "scripts": {
     "start": "webpack --progress --colors --watch -d",

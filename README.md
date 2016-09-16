@@ -1,15 +1,11 @@
-# react-flux-express-mongo : Basic running app
+# Book Trading App
 
-## Usage
+### UserStory
 
-`git clone https://github.com/kumarchandan/code-flux-react-express-mongo.git myapp`
+1. I can view all books posted by every user.
 
-`cd myapp`
+2. I can add a new book.
 
-`npm install`
+3. I can update my settings to store my full name, city, and state.
 
-`npm run build`
-
-`npm run server`
-
-`Open http://127.0.0.1:3000/`
+4. I can propose a trade and wait for the other user to accept the trade.
