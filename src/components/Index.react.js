@@ -20,7 +20,7 @@ var NavigationBar = React.createClass({
             <div>
                 <MuiThemeProvider>
                     <AppBar
-                        title='Stock.Market'
+                        title='App Title'
                         iconElementRight={
                             <IconMenu
                                 iconButtonElement={

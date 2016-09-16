@@ -8,9 +8,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session')
 //
-var socket_io = require('socket.io')
+var socket = require('socket.io')
 //
-var mongoURL = require('./config/database').mongoURL
+var mongoURL = require('./config/keys').db.mongoURL
 var mongoose = require('mongoose')
 // Connect to MongoDB
 mongoose.connect(mongoURL)
@@ -18,14 +18,12 @@ mongoose.connect(mongoURL)
 // Express
 var app = express();
 // socket
-var io = socket_io()
+var io = socket()
 app.io = io
 
 // routes
-var dbAPI = require('./routes/dbAPI')
+var api = require('./routes/api')
 var index = require('./routes/index')
-// socket routes
-// var extAPI = require('./routes/extAPI')(io)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,7 +51,7 @@ app.use(function(req, res, next) {
 
 // routes path
 app.use('/', index)
-app.use('/dbAPI', dbAPI)
+app.use('/api', api)
 
 //
 io.on('connection', function(socket) {
