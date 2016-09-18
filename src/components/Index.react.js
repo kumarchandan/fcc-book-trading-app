@@ -20,7 +20,7 @@ var NavigationBar = React.createClass({
             <div>
                 <MuiThemeProvider>
                     <AppBar
-                        title='Book Trading App'
+                        title='book.Trade'
                         iconElementRight={
                             <IconMenu
                                 iconButtonElement={
@@ -29,14 +29,16 @@ var NavigationBar = React.createClass({
                                 targetOrigin={ { horizontal:'right', vertical: 'top' } }
                                 anchorOrigin={ { horizontal:'right', vertical: 'top' } }
                             >
-                                <MenuItem primaryText='Refresh' />
+                                <MenuItem primaryText='Settings' />
                                 <MenuItem primaryText='Help' />
                                 <MenuItem primaryText='Logout' onTouchTap={this.handleLogout} />
                             </IconMenu>
                         }
                     />
                 </MuiThemeProvider>
-                {this.props.children}
+                <MuiThemeProvider>
+                    {this.props.children}
+                </MuiThemeProvider>
             </div>
         )
     }

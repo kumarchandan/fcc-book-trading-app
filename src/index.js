@@ -1,16 +1,18 @@
-// index.js - UI
+// index.js - UI Controller
 
-var React = require('react')
-var ReactDOM = require('react-dom')
-
+import BookAPI from './utils/BookAPI'
+import Books from './components/Books.react'
+import Index from './components/Index.react'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { Router, Route, hashHistory, IndexRoute } from 'react-router'
-
-var Index = require('./components/Index.react')
-var Books = require('./components/Books.react')
 
 // For Overall App - onTouchTap() for onClick
 injectTapEventPlugin()
+
+// Load available books
+BookAPI.getAvailBooks()
 
 // Home Page
 ReactDOM.render(

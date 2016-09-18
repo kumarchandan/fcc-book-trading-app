@@ -53,16 +53,6 @@ app.use(function(req, res, next) {
 app.use('/', index)
 app.use('/api', api)
 
-//
-io.on('connection', function(socket) {
-  //
-  console.log('a user connected')
-  //
-  socket.on('disconnect', function() {
-    console.log('a user disconnected')
-  })
-})
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
