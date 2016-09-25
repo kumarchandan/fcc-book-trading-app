@@ -2,7 +2,7 @@
 
 var BookModel = require('../models/book')
 
-function addBook(req, res, next) {
+function addBook(req, res) {
     //
     var oBook = {
         id: req.body.id,

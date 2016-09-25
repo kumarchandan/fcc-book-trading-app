@@ -1,8 +1,8 @@
 // components/Books.react.js
 
-import AvailableBooks from './AvailableBooks.react'
+import AvailableBooks from './Books.AllBooks.react'
 import BookActions from '../actions/BookActions'
-import BooksList from './BooksList.react'
+import BooksList from './Books.Search.react'
 import BookStore from '../stores/BookStore'
 import Divider from 'material-ui/Divider'
 import React from 'react'

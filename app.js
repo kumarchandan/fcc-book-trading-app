@@ -1,11 +1,12 @@
 // app.js
 
 var express = require('express');
-var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var path = require('path');
+var passport = require('passport')
 var session = require('express-session')
 //
 var socket = require('socket.io')
@@ -20,6 +21,8 @@ var app = express();
 // socket
 var io = socket()
 app.io = io
+// passport setup
+require('./middlewares/passport')(passport)
 
 // routes
 var api = require('./routes/api')
@@ -42,6 +45,9 @@ app.use(session({
   saveUninitialized: true
 }))
 
+app.use(passport.initialize())
+app.use(passport.session())     // OR app.use(passport.authenticate('session'))
+
 // handle cors
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -52,6 +58,9 @@ app.use(function(req, res, next) {
 // routes path
 app.use('/', index)
 app.use('/api', api)
+// authenticate routes
+require('./routes/passport_auth')(app, passport)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

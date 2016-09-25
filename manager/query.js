@@ -1,8 +1,9 @@
 // manager/query.js
 
 var BookModel = require('../models/book')
+var UserModel = require('../models/user')
 
-function getAvailBooks(req, res, next) {
+function getAvailBooks(req, res) {
     //
     BookModel.find(function(err, books) {
         //

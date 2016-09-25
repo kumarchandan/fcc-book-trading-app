@@ -3,7 +3,7 @@
 var key = require('../config/keys').googleBooksAPI.key
 var googleBooks = require('googleapis').books('v1')
 
-function getBooks(req, res, next) {
+function getBooks(req, res) {
     //
     var bookName = req.query.bookName
     var startIndex = 0      // handle pagination using startIndex

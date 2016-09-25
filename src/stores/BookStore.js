@@ -70,6 +70,7 @@ AppDispatcher.register(function(payload) {
         case BookConstants.GET_AVAIL_BOOKS_RESPONSE:
             loadAvailBooks(action.data)
             BookStore.emitChange()
+            break
         default:
             break
     }
