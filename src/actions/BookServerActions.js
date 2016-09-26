@@ -19,9 +19,9 @@ var BookServerActions = {
         })
     },
     //
-    getAvailBooks: function(data) {
+    getAllBooks: function(data) {
         AppDispatcher.handleAction({
-            actionType: BookConstants.GET_AVAIL_BOOKS_RESPONSE,
+            actionType: BookConstants.GET_ALL_BOOKS_RESPONSE,
             data: data
         })
     }

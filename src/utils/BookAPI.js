@@ -6,13 +6,13 @@ import BookServerActions from '../actions/BookServerActions'
 
 var BookAPI = {
     //
-    getAvailBooks: function() {
+    getAllBooks: function() {
         //
         request.get('/api/books/all').end(function(err, result) {
             //
             if(err) throw err
             //
-            BookServerActions.getAvailBooks(result.body.data)
+            BookServerActions.getAllBooks(result.body.data)
         })
     },
     //

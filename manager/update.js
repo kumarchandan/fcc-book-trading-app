@@ -3,20 +3,21 @@
 var BookModel = require('../models/book')
 
 function addBook(req, res) {
+    // User can have many books of same title, let it all save
+    var newBook = new BookModel()
+    newBook.bookId = req.body.id
+    newBook.title = req.body.title
+    newBook.cover = req.body.cover === undefined ? '': req.body.cover
+    newBook.owner = req.user.username
+    newBook.requested = false
     //
-    var oBook = {
-        id: req.body.id,
-        title: req.body.title,
-        cover: req.body.cover === undefined ? '': req.body.cover
-    }
-    //
-    BookModel.update({ owner: 'kchan', bookId: oBook.id }, { title: oBook.title, cover: oBook.cover, requested: false }, { upsert: true }, function(err, doc) {
+    newBook.save(function(err, doc) {
         if(err) throw err
         //
         if(doc) {
             res.status(200).json({
                 data: {
-                    msg: oBook.title + ' added.'
+                    msg: newBook.title + ' added.'
                 }
             })
         }

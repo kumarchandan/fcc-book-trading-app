@@ -8,7 +8,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import Login from './components/Login.react'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, hashHistory, IndexRoute, browserHistory } from 'react-router'
+import { Router, Route, hashHistory, IndexRoute } from 'react-router'
 import Signup from './components/Signup.react'
 import UserAPI from './utils/UserAPI'
 
@@ -16,7 +16,7 @@ import UserAPI from './utils/UserAPI'
 injectTapEventPlugin()
 
 // Load available books
-BookAPI.getAvailBooks()
+BookAPI.getAllBooks()
 
 // onEnter check isLoggedIn
 function isLoggedIn(nextState, replace, done) {
@@ -35,7 +35,7 @@ function isLoggedIn(nextState, replace, done) {
 // Home Page
 ReactDOM.render(
     (
-        <Router history={browserHistory}>
+        <Router history={hashHistory}>
             <Route path='/' component={Index}>
                 <IndexRoute component={Home} />
                 <Route path='/books' component={Books} onEnter={isLoggedIn}></Route>

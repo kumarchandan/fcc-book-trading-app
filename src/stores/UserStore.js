@@ -6,28 +6,36 @@ import UserConstants from '../constants/UserConstants'
 
 var EventEmitter = require('events').EventEmitter
 //
-var _signupMsg = ''
-var _loginMsg = ''
+var _signupMsg = {
+    text: '',
+    severity: ''
+}
+var _loginMsg = {
+    text: '',
+    severity: ''
+}
 
 //
 function loadSignupMsg(msg) {
-    _signupMsg = msg.text
+    _signupMsg = msg
 }
 function loadLoginMsg(msg) {
-    _loginMsg = msg.text
+    _loginMsg = msg
 }
 
 //
 var UserStore = _.extend({}, EventEmitter.prototype, {
     //
     getRegisterMsg: function() {
-        var temp = _signupMsg
-        _signupMsg = ''
+        var temp = Object.assign({}, _signupMsg)    // clone entire object
+        _signupMsg.text = ''
+        _signupMsg.severity = ''
         return temp
     },
     getLoginMsg: function() {
-        var temp = _loginMsg
-        _loginMsg = ''
+        var temp = Object.assign({}, _loginMsg)     // Clone entire object
+        _loginMsg.text = ''
+        _loginMsg.severity = ''
         return temp
     },
     emitChange: function() {

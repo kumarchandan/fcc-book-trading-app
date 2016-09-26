@@ -7,7 +7,7 @@ import BookConstants from '../constants/BookConstants'
 
 //
 var _books = []
-var _availBooks = []
+var _allBooks = []
 var _msg = ''
 
 //
@@ -19,8 +19,8 @@ function loadMsg(data) {
     _msg = data.msg
 }
 //
-function loadAvailBooks(data) {
-    _availBooks = data.items
+function loadAllBooks(data) {
+    _allBooks = data.items
 }
 
 var BookStore = _.extend({}, EventEmitter.prototype, {
@@ -35,8 +35,8 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
         return temp
     },
     //
-    getAvailBooks: function() {
-        return _availBooks
+    getAllBooks: function() {
+        return _allBooks
     },
     //
     emitChange: function() {
@@ -67,8 +67,8 @@ AppDispatcher.register(function(payload) {
             loadMsg(action.data)
             BookStore.emitChange()
             break
-        case BookConstants.GET_AVAIL_BOOKS_RESPONSE:
-            loadAvailBooks(action.data)
+        case BookConstants.GET_ALL_BOOKS_RESPONSE:
+            loadAllBooks(action.data)
             BookStore.emitChange()
             break
         default:

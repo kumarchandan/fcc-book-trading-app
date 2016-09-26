@@ -65,6 +65,11 @@ var Login = React.createClass({
     componentDidMount: function() {
         UserStore.addChangeListener(this._onChange)
     },
+    componentDidUpdate: function(prevProps, prevState) {
+        if(this.state.msg.severity === 'S') {
+            this.context.router.push('/books')
+        }
+    },
     componentWillUnmount: function() {
         UserStore.removeChangeListener(this._onChange)
     },
@@ -91,7 +96,7 @@ var Login = React.createClass({
                             <RaisedButton type='submit' primary={true} label='Submit' style={styles.submitStyle} disabled={!this.state.canSubmit} />
                         </Formsy.Form>
                 </Paper>
-                <Snackbar open={this.state.msg === ''? false: true} message={this.state.msg} autoHideDuration={3000} />
+                <Snackbar open={this.state.msg.text === ''? false: true} message={this.state.msg.text} autoHideDuration={3000} />
             </div>
         )
     }

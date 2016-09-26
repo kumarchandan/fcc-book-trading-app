@@ -99,7 +99,7 @@
 	// Load available books
 	// index.js - UI Controller
 	
-	_BookAPI2.default.getAvailBooks();
+	_BookAPI2.default.getAllBooks();
 	
 	// onEnter check isLoggedIn
 	function isLoggedIn(nextState, replace, done) {
@@ -118,7 +118,7 @@
 	// Home Page
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRouter.Router,
-	    { history: _reactRouter.browserHistory },
+	    { history: _reactRouter.hashHistory },
 	    _react2.default.createElement(
 	        _reactRouter.Route,
 	        { path: '/', component: _Index2.default },
@@ -150,13 +150,13 @@
 	
 	var BookAPI = {
 	    //
-	    getAvailBooks: function getAvailBooks() {
+	    getAllBooks: function getAllBooks() {
 	        //
 	        request.get('/api/books/all').end(function (err, result) {
 	            //
 	            if (err) throw err;
 	            //
-	            _BookServerActions2.default.getAvailBooks(result.body.data);
+	            _BookServerActions2.default.getAllBooks(result.body.data);
 	        });
 	    },
 	    //
@@ -220,9 +220,9 @@
 	        });
 	    },
 	    //
-	    getAvailBooks: function getAvailBooks(data) {
+	    getAllBooks: function getAllBooks(data) {
 	        _AppDispatcher2.default.handleAction({
-	            actionType: _BookConstants2.default.GET_AVAIL_BOOKS_RESPONSE,
+	            actionType: _BookConstants2.default.GET_ALL_BOOKS_RESPONSE,
 	            data: data
 	        });
 	    }
@@ -793,7 +793,7 @@
 	    ADD_BOOK_RESPONSE: null,
 	    GET_BOOKS: null,
 	    GET_BOOKS_RESPONSE: null,
-	    GET_AVAIL_BOOKS_RESPONSE: null
+	    GET_ALL_BOOKS_RESPONSE: null
 	}); // constants/BookConstants.js
 
 /***/ },
@@ -2478,7 +2478,7 @@
 	function getFromBookStore() {
 	    return {
 	        books: _BookStore2.default.getBooks(),
-	        availBooks: _BookStore2.default.getAvailBooks(),
+	        allBooks: _BookStore2.default.getAllBooks(),
 	        msg: _BookStore2.default.getMsg()
 	    };
 	} // components/Books.react.js
@@ -2491,7 +2491,7 @@
 	        return getFromBookStore();
 	    },
 	    //
-	    onChange: function onChange() {
+	    _onChange: function _onChange() {
 	        this.setState(getFromBookStore());
 	    },
 	    //
@@ -2510,10 +2510,10 @@
 	    componentDidMount: function componentDidMount() {
 	        //
 	        this.inpAddBook.focus();
-	        _BookStore2.default.addListener(this.onChange);
+	        _BookStore2.default.addListener(this._onChange);
 	    },
 	    componentWillUnmount: function componentWillUnmount() {
-	        _BookStore2.default.removeListener(this.onChange);
+	        _BookStore2.default.removeListener(this._onChange);
 	    },
 	    //
 	    render: function render() {
@@ -2535,7 +2535,7 @@
 	                        'All Books List'
 	                    ),
 	                    _react2.default.createElement(_Divider2.default, null),
-	                    _react2.default.createElement(_BooksAllBooks2.default, { books: this.state.availBooks })
+	                    _react2.default.createElement(_BooksAllBooks2.default, { books: this.state.allBooks })
 	                ),
 	                _react2.default.createElement(
 	                    _Tabs.Tab,
@@ -2602,7 +2602,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
-	// components/AvailableBooks.react.js
+	// components/AllBooks.react.js
 	
 	var styles = {
 	    root: {
@@ -2618,8 +2618,8 @@
 	    }
 	};
 	
-	var AvailableBooks = _react2.default.createClass({
-	    displayName: 'AvailableBooks',
+	var AllBooks = _react2.default.createClass({
+	    displayName: 'AllBooks',
 	
 	    //
 	    handleRequestBook: function handleRequestBook() {
@@ -2644,7 +2644,7 @@
 	                    return _react2.default.createElement(
 	                        _GridList.GridTile,
 	                        {
-	                            key: book.bookId,
+	                            key: book._id,
 	                            title: book.title,
 	                            actionIcon: _react2.default.createElement(
 	                                _IconButton2.default,
@@ -2665,7 +2665,7 @@
 	    }
 	});
 	
-	module.exports = AvailableBooks;
+	module.exports = AllBooks;
 
 /***/ },
 /* 17 */
@@ -28779,7 +28779,7 @@
 	
 	//
 	var _books = [];
-	var _availBooks = [];
+	var _allBooks = [];
 	var _msg = '';
 	
 	//
@@ -28791,8 +28791,8 @@
 	    _msg = data.msg;
 	}
 	//
-	function loadAvailBooks(data) {
-	    _availBooks = data.items;
+	function loadAllBooks(data) {
+	    _allBooks = data.items;
 	}
 	
 	var BookStore = _.extend({}, EventEmitter.prototype, {
@@ -28807,8 +28807,8 @@
 	        return temp;
 	    },
 	    //
-	    getAvailBooks: function getAvailBooks() {
-	        return _availBooks;
+	    getAllBooks: function getAllBooks() {
+	        return _allBooks;
 	    },
 	    //
 	    emitChange: function emitChange() {
@@ -28839,8 +28839,8 @@
 	            loadMsg(action.data);
 	            BookStore.emitChange();
 	            break;
-	        case _BookConstants2.default.GET_AVAIL_BOOKS_RESPONSE:
-	            loadAvailBooks(action.data);
+	        case _BookConstants2.default.GET_ALL_BOOKS_RESPONSE:
+	            loadAllBooks(action.data);
 	            BookStore.emitChange();
 	            break;
 	        default:
@@ -46918,6 +46918,11 @@
 	    componentDidMount: function componentDidMount() {
 	        _UserStore2.default.addChangeListener(this._onChange);
 	    },
+	    componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	        if (this.state.msg.severity === 'S') {
+	            this.context.router.push('/books');
+	        }
+	    },
 	    componentWillUnmount: function componentWillUnmount() {
 	        _UserStore2.default.removeChangeListener(this._onChange);
 	    },
@@ -46960,7 +46965,7 @@
 	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit })
 	                )
 	            ),
-	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg === '' ? false : true, message: this.state.msg, autoHideDuration: 3000 })
+	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg.text === '' ? false : true, message: this.state.msg.text, autoHideDuration: 3000 })
 	        );
 	    }
 	});
@@ -48279,28 +48284,36 @@
 	//
 	// stores/UserStore.js
 	
-	var _signupMsg = '';
-	var _loginMsg = '';
+	var _signupMsg = {
+	    text: '',
+	    severity: ''
+	};
+	var _loginMsg = {
+	    text: '',
+	    severity: ''
+	};
 	
 	//
 	function loadSignupMsg(msg) {
-	    _signupMsg = msg.text;
+	    _signupMsg = msg;
 	}
 	function loadLoginMsg(msg) {
-	    _loginMsg = msg.text;
+	    _loginMsg = msg;
 	}
 	
 	//
 	var UserStore = _underscore2.default.extend({}, EventEmitter.prototype, {
 	    //
 	    getRegisterMsg: function getRegisterMsg() {
-	        var temp = _signupMsg;
-	        _signupMsg = '';
+	        var temp = Object.assign({}, _signupMsg); // clone entire object
+	        _signupMsg.text = '';
+	        _signupMsg.severity = '';
 	        return temp;
 	    },
 	    getLoginMsg: function getLoginMsg() {
-	        var temp = _loginMsg;
-	        _loginMsg = '';
+	        var temp = Object.assign({}, _loginMsg); // Clone entire object
+	        _loginMsg.text = '';
+	        _loginMsg.severity = '';
 	        return temp;
 	    },
 	    emitChange: function emitChange() {
@@ -54212,6 +54225,11 @@
 	    componentWillUnmount: function componentWillUnmount() {
 	        _UserStore2.default.removeChangeListener(this._onChange);
 	    },
+	    componentDidUpdate: function componentDidUpdate() {
+	        if (this.state.msg.severity === 'S') {
+	            this.context.router.push('/books');
+	        }
+	    },
 	    //
 	    render: function render() {
 	        var _this = this;
@@ -54247,7 +54265,7 @@
 	                            maxLength: 50
 	                        }, validationErrors: {
 	                            isEmail: emailError,
-	                            maxLength: 'You can not have an email with more than 50 characters'
+	                            maxLength: 'You cannot have an email with more than 50 characters'
 	                        }, required: true }),
 	                    _react2.default.createElement('br', null),
 	                    _react2.default.createElement(_FormsyText2.default, { name: 'password', hintText: 'password', ref: function ref(_ref3) {
@@ -54265,7 +54283,7 @@
 	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit })
 	                )
 	            ),
-	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg === '' ? false : true, message: this.state.msg, autoHideDuration: 3000 })
+	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg.text === '' ? false : true, message: this.state.msg.text, autoHideDuration: 3000 })
 	        );
 	    }
 	});

@@ -1,6 +1,6 @@
 // components/Books.react.js
 
-import AvailableBooks from './Books.AllBooks.react'
+import AllBooks from './Books.AllBooks.react'
 import BookActions from '../actions/BookActions'
 import BooksList from './Books.Search.react'
 import BookStore from '../stores/BookStore'
@@ -14,7 +14,7 @@ import { Tab, Tabs } from 'material-ui/Tabs'
 function getFromBookStore() {
     return {
         books: BookStore.getBooks(),
-        availBooks: BookStore.getAvailBooks(),
+        allBooks: BookStore.getAllBooks(),
         msg: BookStore.getMsg()
     }
 }
@@ -25,7 +25,7 @@ var Books = React.createClass({
         return getFromBookStore()
     },
     //
-    onChange: function() {
+    _onChange: function() {
         this.setState(getFromBookStore())
     },
     //
@@ -43,10 +43,10 @@ var Books = React.createClass({
     componentDidMount: function() {
         //
         this.inpAddBook.focus()
-        BookStore.addListener(this.onChange)
+        BookStore.addListener(this._onChange)
     },
     componentWillUnmount: function() {
-        BookStore.removeListener(this.onChange)
+        BookStore.removeListener(this._onChange)
     },
     //
     render: function() {
@@ -57,7 +57,7 @@ var Books = React.createClass({
                     <Tab label='All Books'>
                         <h3>All Books List</h3>
                         <Divider />
-                        <AvailableBooks books={this.state.availBooks} />
+                        <AllBooks books={this.state.allBooks} />
                     </Tab>
                     <Tab label='My Books'>
                         <h3>My Books List</h3>

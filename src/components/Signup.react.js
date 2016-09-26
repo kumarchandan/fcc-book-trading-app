@@ -68,6 +68,11 @@ var Signup = React.createClass({
     componentWillUnmount: function() {
         UserStore.removeChangeListener(this._onChange)
     },
+    componentDidUpdate: function() {
+        if(this.state.msg.severity === 'S') {
+            this.context.router.push('/books')
+        }
+    },
     //
     render: function() {
         //
@@ -87,7 +92,7 @@ var Signup = React.createClass({
                             maxLength: 50
                         }} validationErrors={{
                             isEmail: emailError,
-                            maxLength: 'You can not have an email with more than 50 characters'
+                            maxLength: 'You cannot have an email with more than 50 characters'
                         }} required />
                         <br />
                         <FormsyText name='password' hintText='password' ref={ (ref) => this.password = ref } type='password' required />
@@ -101,7 +106,7 @@ var Signup = React.createClass({
                         <RaisedButton type='submit' primary={true} label='Submit' style={styles.submitStyle} disabled={!this.state.canSubmit} />
                     </Formsy.Form>
                 </Paper>
-                <Snackbar open={this.state.msg === ''? false: true} message={this.state.msg} autoHideDuration={3000} />
+                <Snackbar open={this.state.msg.text === ''? false: true} message={this.state.msg.text} autoHideDuration={3000} />
             </div>
         )
     }

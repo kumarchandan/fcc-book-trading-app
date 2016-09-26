@@ -1,4 +1,4 @@
-// components/AvailableBooks.react.js
+// components/AllBooks.react.js
 
 import BookActions from '../actions/BookActions'
 import FavoriteBorder from 'material-ui/svg-icons/action/favorite-border'
@@ -22,7 +22,7 @@ const styles = {
     }
 }
 
-var AvailableBooks = React.createClass({
+var AllBooks = React.createClass({
     //
     handleRequestBook: function() {
         alert('clicked')
@@ -39,7 +39,7 @@ var AvailableBooks = React.createClass({
                 <GridList cellHeight={250} style={styles.gridList} cols={5} padding={20}>
                     {this.props.books.map((book) => (
                         <GridTile 
-                            key={book.bookId}
+                            key={book._id}
                             title={book.title}
                             actionIcon={
                                 <IconButton
@@ -58,4 +58,4 @@ var AvailableBooks = React.createClass({
     }
 })
 
-module.exports = AvailableBooks
+module.exports = AllBooks
