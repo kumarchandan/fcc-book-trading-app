@@ -26,6 +26,14 @@ var BookAPI = {
         })
     },
     //
+    getMyBooks: function() {
+        request.get('/api/books/mine').end(function(err, result) {
+            if(err) throw err
+            //
+            BookServerActions.getMyBooks(result.body.data)
+        })
+    },
+    //
     addBook: function(id, title, cover) {
         //
         request.post('/api/books/add').send({ id: id, title: title, cover: cover }).end(function(err, result) {

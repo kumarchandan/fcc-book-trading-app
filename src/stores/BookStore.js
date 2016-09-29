@@ -9,6 +9,7 @@ import BookConstants from '../constants/BookConstants'
 var _books = []
 var _allBooks = []
 var _msg = ''
+var _myBooks = []
 
 //
 function loadBooks(data) {
@@ -21,6 +22,10 @@ function loadMsg(data) {
 //
 function loadAllBooks(data) {
     _allBooks = data.items
+}
+//
+function loadMyBooks(data) {
+    _myBooks = data.items
 }
 
 var BookStore = _.extend({}, EventEmitter.prototype, {
@@ -37,6 +42,11 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
     //
     getAllBooks: function() {
         return _allBooks
+    },
+    //
+    getMyBooks: function() {
+        //
+        return _myBooks
     },
     //
     emitChange: function() {
@@ -69,6 +79,10 @@ AppDispatcher.register(function(payload) {
             break
         case BookConstants.GET_ALL_BOOKS_RESPONSE:
             loadAllBooks(action.data)
+            BookStore.emitChange()
+            break
+        case BookConstants.GET_MY_BOOKS_RESPONSE:
+            loadMyBooks(action.data)
             BookStore.emitChange()
             break
         default:

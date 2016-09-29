@@ -7,5 +7,6 @@ module.exports = keyMirror({
     ADD_BOOK_RESPONSE: null,
     GET_BOOKS: null,
     GET_BOOKS_RESPONSE: null,
-    GET_ALL_BOOKS_RESPONSE: null
+    GET_ALL_BOOKS_RESPONSE: null,
+    GET_MY_BOOKS_RESPONSE: null
 })

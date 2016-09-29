@@ -3,7 +3,7 @@
 var BookModel = require('../models/book')
 var UserModel = require('../models/user')
 
-function getAvailBooks(req, res) {
+function getAllBooks(req, res) {
     //
     BookModel.find(function(err, books) {
         //
@@ -17,6 +17,24 @@ function getAvailBooks(req, res) {
     })
 }
 
+// Logged in user's books
+function getMyBooks(req, res) {
+    //
+    var owner = req.user ? req.user.email : null
+    if(owner) {
+        BookModel.find({ owner: owner }, function(err, mybooks) {
+            if(err) throw err
+            //
+            res.status(200).json({
+                data: {
+                    items: mybooks
+                }
+            })
+        })
+    }
+}
+
 module.exports = {
-    getAvailBooks: getAvailBooks
+    getAllBooks: getAllBooks,
+    getMyBooks: getMyBooks
 }

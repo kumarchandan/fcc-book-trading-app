@@ -5,6 +5,7 @@ import BookActions from '../actions/BookActions'
 import BooksList from './Books.Search.react'
 import BookStore from '../stores/BookStore'
 import Divider from 'material-ui/Divider'
+import MyBooks from './Books.MyBooks.react'
 import React from 'react'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
@@ -13,6 +14,7 @@ import { Tab, Tabs } from 'material-ui/Tabs'
 // fill state from Store
 function getFromBookStore() {
     return {
+        mybooks: BookStore.getMyBooks(),
         books: BookStore.getBooks(),
         allBooks: BookStore.getAllBooks(),
         msg: BookStore.getMsg()
@@ -61,9 +63,10 @@ var Books = React.createClass({
                     </Tab>
                     <Tab label='My Books'>
                         <h3>My Books List</h3>
-                        <TextField label='My Books' hintText='type your book...' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} fullWidth={true} />
+                        <TextField label='My Books' hintText='Add your book...' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} fullWidth={true} />
                         <Divider />
                         <BooksList books={this.state.books} />
+                        <MyBooks mybooks={this.state.mybooks} />
                     </Tab>
                     <Tab label='Trading Status'>
                         <h3>Approved or Pending or Rejected</h3>

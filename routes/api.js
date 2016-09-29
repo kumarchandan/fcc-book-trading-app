@@ -8,7 +8,8 @@ var update = require('../manager/update')
 
 // GET
 router.get('/books/search', google.getBooks)
-router.get('/books/all', query.getAvailBooks)
+router.get('/books/all', query.getAllBooks)
+router.get('/books/mine', query.getMyBooks)
 
 // POST
 router.post('/books/add', update.addBook)

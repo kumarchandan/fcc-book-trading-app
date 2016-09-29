@@ -10,6 +10,7 @@ var UserSchema = new Schema({
     incomingRequests: [
         {
             sender: String,     // email
+            bookObjId: String,
             bookId: String,
             status: {
                 type: String,
@@ -28,6 +29,7 @@ var UserSchema = new Schema({
     outgoingRequests: [
         {
             receiver: String,   // email
+            bookObjId: String,
             bookId: String,
             status: {
                 type: String,

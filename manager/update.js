@@ -8,7 +8,7 @@ function addBook(req, res) {
     newBook.bookId = req.body.id
     newBook.title = req.body.title
     newBook.cover = req.body.cover === undefined ? '': req.body.cover
-    newBook.owner = req.user.username
+    newBook.owner = req.user.email
     newBook.requested = false
     //
     newBook.save(function(err, doc) {

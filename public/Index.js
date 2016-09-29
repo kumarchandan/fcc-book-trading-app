@@ -100,6 +100,7 @@
 	// index.js - UI Controller
 	
 	_BookAPI2.default.getAllBooks();
+	_BookAPI2.default.getMyBooks();
 	
 	// onEnter check isLoggedIn
 	function isLoggedIn(nextState, replace, done) {
@@ -170,6 +171,14 @@
 	        });
 	    },
 	    //
+	    getMyBooks: function getMyBooks() {
+	        request.get('/api/books/mine').end(function (err, result) {
+	            if (err) throw err;
+	            //
+	            _BookServerActions2.default.getMyBooks(result.body.data);
+	        });
+	    },
+	    //
 	    addBook: function addBook(id, title, cover) {
 	        //
 	        request.post('/api/books/add').send({ id: id, title: title, cover: cover }).end(function (err, result) {
@@ -207,22 +216,29 @@
 	var BookServerActions = {
 	    //
 	    addBook: function addBook(data) {
-	        _AppDispatcher2.default.handleAction({
+	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.ADD_BOOK_RESPONSE,
 	            data: data
 	        });
 	    },
 	    //
 	    getBooks: function getBooks(data) {
-	        _AppDispatcher2.default.handleAction({
+	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_BOOKS_RESPONSE,
 	            data: data
 	        });
 	    },
 	    //
 	    getAllBooks: function getAllBooks(data) {
-	        _AppDispatcher2.default.handleAction({
+	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_ALL_BOOKS_RESPONSE,
+	            data: data
+	        });
+	    },
+	    //
+	    getMyBooks: function getMyBooks(data) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _BookConstants2.default.GET_MY_BOOKS_RESPONSE,
 	            data: data
 	        });
 	    }
@@ -793,7 +809,8 @@
 	    ADD_BOOK_RESPONSE: null,
 	    GET_BOOKS: null,
 	    GET_BOOKS_RESPONSE: null,
-	    GET_ALL_BOOKS_RESPONSE: null
+	    GET_ALL_BOOKS_RESPONSE: null,
+	    GET_MY_BOOKS_RESPONSE: null
 	}); // constants/BookConstants.js
 
 /***/ },
@@ -2458,6 +2475,10 @@
 	
 	var _Divider2 = _interopRequireDefault(_Divider);
 	
+	var _BooksMyBooks = __webpack_require__(/*! ./Books.MyBooks.react */ 530);
+	
+	var _BooksMyBooks2 = _interopRequireDefault(_BooksMyBooks);
+	
 	var _react = __webpack_require__(/*! react */ 19);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -2475,13 +2496,16 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// fill state from Store
+	// components/Books.react.js
+	
 	function getFromBookStore() {
 	    return {
+	        mybooks: _BookStore2.default.getMyBooks(),
 	        books: _BookStore2.default.getBooks(),
 	        allBooks: _BookStore2.default.getAllBooks(),
 	        msg: _BookStore2.default.getMsg()
 	    };
-	} // components/Books.react.js
+	}
 	
 	var Books = _react2.default.createClass({
 	    displayName: 'Books',
@@ -2545,11 +2569,12 @@
 	                        null,
 	                        'My Books List'
 	                    ),
-	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'type your book...', ref: function ref(_ref) {
+	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Add your book...', ref: function ref(_ref) {
 	                            return _this.inpAddBook = _ref;
 	                        }, onKeyDown: this.handleKeyDown, fullWidth: true }),
 	                    _react2.default.createElement(_Divider2.default, null),
-	                    _react2.default.createElement(_BooksSearch2.default, { books: this.state.books })
+	                    _react2.default.createElement(_BooksSearch2.default, { books: this.state.books }),
+	                    _react2.default.createElement(_BooksMyBooks2.default, { mybooks: this.state.mybooks })
 	                ),
 	                _react2.default.createElement(
 	                    _Tabs.Tab,
@@ -28781,6 +28806,7 @@
 	var _books = [];
 	var _allBooks = [];
 	var _msg = '';
+	var _myBooks = [];
 	
 	//
 	function loadBooks(data) {
@@ -28793,6 +28819,10 @@
 	//
 	function loadAllBooks(data) {
 	    _allBooks = data.items;
+	}
+	//
+	function loadMyBooks(data) {
+	    _myBooks = data.items;
 	}
 	
 	var BookStore = _.extend({}, EventEmitter.prototype, {
@@ -28809,6 +28839,11 @@
 	    //
 	    getAllBooks: function getAllBooks() {
 	        return _allBooks;
+	    },
+	    //
+	    getMyBooks: function getMyBooks() {
+	        //
+	        return _myBooks;
 	    },
 	    //
 	    emitChange: function emitChange() {
@@ -28841,6 +28876,10 @@
 	            break;
 	        case _BookConstants2.default.GET_ALL_BOOKS_RESPONSE:
 	            loadAllBooks(action.data);
+	            BookStore.emitChange();
+	            break;
+	        case _BookConstants2.default.GET_MY_BOOKS_RESPONSE:
+	            loadMyBooks(action.data);
 	            BookStore.emitChange();
 	            break;
 	        default:
@@ -54289,6 +54328,107 @@
 	});
 	
 	module.exports = Signup;
+
+/***/ },
+/* 530 */
+/*!***********************************************!*\
+  !*** ./src/components/Books.MyBooks.react.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _BookActions = __webpack_require__(/*! ../actions/BookActions */ 17);
+	
+	var _BookActions2 = _interopRequireDefault(_BookActions);
+	
+	var _favoriteBorder = __webpack_require__(/*! material-ui/svg-icons/action/favorite-border */ 18);
+	
+	var _favoriteBorder2 = _interopRequireDefault(_favoriteBorder);
+	
+	var _IconButton = __webpack_require__(/*! material-ui/IconButton */ 66);
+	
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+	
+	var _react = __webpack_require__(/*! react */ 19);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Subheader = __webpack_require__(/*! material-ui/Subheader */ 228);
+	
+	var _Subheader2 = _interopRequireDefault(_Subheader);
+	
+	var _GridList = __webpack_require__(/*! material-ui/GridList */ 230);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// Styles
+	// components/BooksMyBooks.react.js
+	
+	var styles = {
+	    root: {
+	        display: 'flex',
+	        flexWrap: 'wrap',
+	        justifyContent: 'space-around'
+	    },
+	    gridList: {
+	        width: 1024,
+	        height: 'auto',
+	        overflowY: 'auto',
+	        marginBottom: 24
+	    }
+	};
+	
+	//
+	var MyBooks = _react2.default.createClass({
+	    displayName: 'MyBooks',
+	
+	    //
+	    removeBook: function removeBook() {
+	        alert('we will remove the book.');
+	    },
+	    //
+	    render: function render() {
+	        var _this = this;
+	
+	        //
+	        if (this.props.mybooks.length === 0) {
+	            return null;
+	        }
+	        //
+	        return _react2.default.createElement(
+	            'div',
+	            { style: styles.root },
+	            _react2.default.createElement(
+	                _GridList.GridList,
+	                { cellHeight: 250, style: styles.gridList, cols: 5, padding: 20 },
+	                this.props.mybooks.map(function (book) {
+	                    return _react2.default.createElement(
+	                        _GridList.GridTile,
+	                        {
+	                            key: book._id,
+	                            title: book.title,
+	                            actionIcon: _react2.default.createElement(
+	                                _IconButton2.default,
+	                                {
+	                                    onTouchTap: function onTouchTap() {
+	                                        return _this.removeBook();
+	                                    },
+	                                    tooltip: book.title,
+	                                    tooltipPosition: 'top-left' },
+	                                _react2.default.createElement(_favoriteBorder2.default, { color: 'white' })
+	                            )
+	                        },
+	                        _react2.default.createElement('img', { src: book.cover === '' ? null : book.cover, alt: book.title })
+	                    );
+	                }, this)
+	            )
+	        );
+	    }
+	});
+	
+	//
+	module.exports = MyBooks;
 
 /***/ }
 /******/ ]);

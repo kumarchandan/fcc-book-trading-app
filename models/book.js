@@ -9,7 +9,10 @@ var bookSchema = new Schema({
     cover: String,
     owner: String,
     active: Boolean,    // books is availabe for rent or not
-    holder: String      // email of user(holder), else null
+    holder: {
+        type: String,
+        default: ''
+    }
 })
 
 module.exports = mongoose.model('books', bookSchema)

@@ -17,6 +17,7 @@ injectTapEventPlugin()
 
 // Load available books
 BookAPI.getAllBooks()
+BookAPI.getMyBooks()
 
 // onEnter check isLoggedIn
 function isLoggedIn(nextState, replace, done) {
