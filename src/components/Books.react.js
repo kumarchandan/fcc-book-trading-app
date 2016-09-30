@@ -43,6 +43,9 @@ var Books = React.createClass({
     },
     //
     componentDidMount: function() {
+        // Load Initial data
+        BookActions.getAllBooks()
+        BookActions.getMyBooks()
         //
         this.inpAddBook.focus()
         BookStore.addListener(this._onChange)

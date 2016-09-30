@@ -29,6 +29,14 @@ var UserAPI = {
             }
         })
     },
+    // Logout
+    logout: function() {
+        request.get('/logout').end(function(err, result) {
+            if(err) throw err
+            //
+            UserServerActions.logout(result.body.msg)
+        })
+    },
     //
     isLoggedIn: function(done) {
         //
@@ -40,6 +48,18 @@ var UserAPI = {
                 done(true)
             } else {
                 done(false)
+            }
+        })
+    },
+    //
+    getUserProfile: function() {
+        request.get('/isloggedin').end(function(err, result) {
+            if(err) throw err
+            //
+            if(result.body.data) {
+                UserServerActions.getUserProfile(result.body.data)
+            } else {
+                UserServerActions.getUserProfile(null)
             }
         })
     }

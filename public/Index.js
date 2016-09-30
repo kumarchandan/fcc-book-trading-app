@@ -49,10 +49,6 @@
 
 	'use strict';
 	
-	var _BookAPI = __webpack_require__(/*! ./utils/BookAPI */ 1);
-	
-	var _BookAPI2 = _interopRequireDefault(_BookAPI);
-	
 	var _Books = __webpack_require__(/*! ./components/Books.react */ 15);
 	
 	var _Books2 = _interopRequireDefault(_Books);
@@ -94,13 +90,9 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// For Overall App - onTouchTap() for onClick
-	(0, _reactTapEventPlugin2.default)();
-	
-	// Load available books
 	// index.js - UI Controller
 	
-	_BookAPI2.default.getAllBooks();
-	_BookAPI2.default.getMyBooks();
+	(0, _reactTapEventPlugin2.default)();
 	
 	// onEnter check isLoggedIn
 	function isLoggedIn(nextState, replace, done) {
@@ -809,7 +801,9 @@
 	    ADD_BOOK_RESPONSE: null,
 	    GET_BOOKS: null,
 	    GET_BOOKS_RESPONSE: null,
+	    GET_ALL_BOOKS: null,
 	    GET_ALL_BOOKS_RESPONSE: null,
+	    GET_MY_BOOKS: null,
 	    GET_MY_BOOKS_RESPONSE: null
 	}); // constants/BookConstants.js
 
@@ -2532,6 +2526,9 @@
 	    },
 	    //
 	    componentDidMount: function componentDidMount() {
+	        // Load Initial data
+	        _BookActions2.default.getAllBooks();
+	        _BookActions2.default.getMyBooks();
 	        //
 	        this.inpAddBook.focus();
 	        _BookStore2.default.addListener(this._onChange);
@@ -2731,6 +2728,22 @@
 	        });
 	        //
 	        _BookAPI2.default.addBook(id, title, cover);
+	    },
+	    //
+	    getAllBooks: function getAllBooks(bookName) {
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _BookConstants2.default.GET_ALL_BOOKS
+	        });
+	        //
+	        _BookAPI2.default.getAllBooks();
+	    },
+	    //
+	    getMyBooks: function getMyBooks() {
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _BookConstants2.default.GET_MY_BOOKS
+	        });
+	        //
+	        _BookAPI2.default.getMyBooks();
 	    }
 	}; // actions/BookActions.js
 	
@@ -35092,6 +35105,10 @@
 	
 	var _AppBar2 = _interopRequireDefault(_AppBar);
 	
+	var _Avatar = __webpack_require__(/*! material-ui/Avatar */ 531);
+	
+	var _Avatar2 = _interopRequireDefault(_Avatar);
+	
 	var _FlatButton = __webpack_require__(/*! material-ui/FlatButton */ 246);
 	
 	var _FlatButton2 = _interopRequireDefault(_FlatButton);
@@ -35120,24 +35137,69 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _UserActions = __webpack_require__(/*! ../actions/UserActions */ 462);
+	
+	var _UserActions2 = _interopRequireDefault(_UserActions);
+	
+	var _UserStore = __webpack_require__(/*! ../stores/UserStore */ 466);
+	
+	var _UserStore2 = _interopRequireDefault(_UserStore);
+	
 	var _colors = __webpack_require__(/*! material-ui/styles/colors */ 407);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
+	// Index.react.js : Navigation bar [parent of all UI components]
+	
 	var style = {
 	    color: _colors.white
 	};
 	
-	// Navigation bar
-	// Index.react.js : Navigation bar [parent of all UI components]
+	// UserStore
+	function getUserStore() {
+	    return {
+	        userProfile: _UserStore2.default.getUserProfile(),
+	        logoutMsg: _UserStore2.default.getLogoutMsg()
+	    };
+	}
 	
+	// Navigation bar
 	var NavigationBar = _react2.default.createClass({
 	    displayName: 'NavigationBar',
 	
 	    //
+	    contextTypes: {
+	        router: _react2.default.PropTypes.object
+	    },
+	    //
+	    getInitialState: function getInitialState() {
+	        return getUserStore();
+	    },
+	    //
+	    _onChange: function _onChange() {
+	        this.setState(getUserStore());
+	    },
+	    //
 	    handleLogout: function handleLogout() {
-	        alert('Do not logout man!');
+	        _UserActions2.default.logout();
+	    },
+	    //
+	    componentDidMount: function componentDidMount() {
+	        //
+	        _UserActions2.default.getUserProfile();
+	        _UserStore2.default.addChangeListener(this._onChange);
+	    },
+	    componentDidUpdate: function componentDidUpdate() {
+	        //
+	        if (this.state.logoutMsg.severity === 'S') {
+	            this.context.router.push('/');
+	        }
+	    },
+	    //
+	    componentWillUnmount: function componentWillUnmount() {
+	        //
+	        _UserStore2.default.removeChangeListener(this._onChange);
 	    },
 	    // render
 	    render: function render() {
@@ -35152,8 +35214,11 @@
 	                    iconElementRight: _react2.default.createElement(
 	                        'div',
 	                        null,
-	                        _react2.default.createElement(_FlatButton2.default, { label: 'Login', style: style }),
-	                        _react2.default.createElement(_FlatButton2.default, { label: 'Signup', style: style }),
+	                        this.state.userProfile ? _react2.default.createElement(
+	                            _Avatar2.default,
+	                            null,
+	                            this.state.userProfile.username.split('')[0].toUpperCase()
+	                        ) : null,
 	                        _react2.default.createElement(
 	                            _IconMenu2.default,
 	                            {
@@ -48160,6 +48225,24 @@
 	        });
 	        //
 	        _UserAPI2.default.login(userData);
+	    },
+	    // Get User Profile
+	    getUserProfile: function getUserProfile() {
+	        //
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _UserConstants2.default.GET_USER_PROFILE
+	        });
+	        //
+	        _UserAPI2.default.getUserProfile();
+	    },
+	    // Logout
+	    logout: function logout() {
+	        //
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _UserConstants2.default.LOGOUT
+	        });
+	        //
+	        _UserAPI2.default.logout();
 	    }
 	};
 	
@@ -48187,7 +48270,11 @@
 	    REGISTER_USER: null,
 	    REGISTER_USER_RESPONSE: null,
 	    LOGIN: null,
-	    LOGIN_RESPONSE: null
+	    LOGIN_RESPONSE: null,
+	    LOGOUT: null,
+	    LOGOUT_RESPONSE: null,
+	    GET_USER_PROFILE: null,
+	    GET_USER_PROFILE_RESPONSE: null
 	}); // constants/UserConstants.js
 
 /***/ },
@@ -48237,6 +48324,14 @@
 	            }
 	        });
 	    },
+	    // Logout
+	    logout: function logout() {
+	        _superagent2.default.get('/logout').end(function (err, result) {
+	            if (err) throw err;
+	            //
+	            _UserServerActions2.default.logout(result.body.msg);
+	        });
+	    },
 	    //
 	    isLoggedIn: function isLoggedIn(done) {
 	        //
@@ -48248,6 +48343,18 @@
 	                done(true);
 	            } else {
 	                done(false);
+	            }
+	        });
+	    },
+	    //
+	    getUserProfile: function getUserProfile() {
+	        _superagent2.default.get('/isloggedin').end(function (err, result) {
+	            if (err) throw err;
+	            //
+	            if (result.body.data) {
+	                _UserServerActions2.default.getUserProfile(result.body.data);
+	            } else {
+	                _UserServerActions2.default.getUserProfile(null);
 	            }
 	        });
 	    }
@@ -48291,6 +48398,20 @@
 	            actionType: _UserConstants2.default.LOGIN_RESPONSE,
 	            data: msg
 	        });
+	    },
+	    // Logout
+	    logout: function logout(msg) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _UserConstants2.default.LOGOUT_RESPONSE,
+	            data: msg
+	        });
+	    },
+	    // Get User Profile
+	    getUserProfile: function getUserProfile(userProfile) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _UserConstants2.default.GET_USER_PROFILE_RESPONSE,
+	            data: userProfile
+	        });
 	    }
 	};
 	
@@ -48331,6 +48452,12 @@
 	    text: '',
 	    severity: ''
 	};
+	var _logoutMsg = {
+	    text: '',
+	    severity: ''
+	};
+	// User Profile
+	var _userProfile = null;
 	
 	//
 	function loadSignupMsg(msg) {
@@ -48338,6 +48465,12 @@
 	}
 	function loadLoginMsg(msg) {
 	    _loginMsg = msg;
+	}
+	function loadLogoutMsg(msg) {
+	    _logoutMsg = msg;
+	}
+	function loadUserProfile(userProfile) {
+	    _userProfile = userProfile;
 	}
 	
 	//
@@ -48354,6 +48487,15 @@
 	        _loginMsg.text = '';
 	        _loginMsg.severity = '';
 	        return temp;
+	    },
+	    getLogoutMsg: function getLogoutMsg() {
+	        var temp = Object.assign({}, _logoutMsg);
+	        _logoutMsg.text = '';
+	        _logoutMsg.severity = '';
+	        return temp;
+	    },
+	    getUserProfile: function getUserProfile() {
+	        return _userProfile;
 	    },
 	    emitChange: function emitChange() {
 	        this.emit('change');
@@ -48377,6 +48519,14 @@
 	            break;
 	        case _UserConstants2.default.LOGIN_RESPONSE:
 	            loadLoginMsg(action.data);
+	            UserStore.emitChange();
+	            break;
+	        case _UserConstants2.default.GET_USER_PROFILE_RESPONSE:
+	            loadUserProfile(action.data);
+	            UserStore.emitChange();
+	            break;
+	        case _UserConstants2.default.LOGOUT_RESPONSE:
+	            loadLogoutMsg(action.data);
 	            UserStore.emitChange();
 	            break;
 	        default:
@@ -54429,6 +54579,190 @@
 	
 	//
 	module.exports = MyBooks;
+
+/***/ },
+/* 531 */
+/*!***************************************!*\
+  !*** ./~/material-ui/Avatar/index.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+	
+	var _Avatar = __webpack_require__(/*! ./Avatar */ 532);
+	
+	var _Avatar2 = _interopRequireDefault(_Avatar);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _Avatar2.default;
+
+/***/ },
+/* 532 */
+/*!****************************************!*\
+  !*** ./~/material-ui/Avatar/Avatar.js ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _simpleAssign = __webpack_require__(/*! simple-assign */ 64);
+	
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+	
+	var _react = __webpack_require__(/*! react */ 19);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function getStyles(props, context) {
+	  var backgroundColor = props.backgroundColor;
+	  var color = props.color;
+	  var size = props.size;
+	  var avatar = context.muiTheme.avatar;
+	
+	
+	  var styles = {
+	    root: {
+	      color: color || avatar.color,
+	      backgroundColor: backgroundColor || avatar.backgroundColor,
+	      userSelect: 'none',
+	      display: 'inline-flex',
+	      alignItems: 'center',
+	      justifyContent: 'center',
+	      fontSize: size / 2,
+	      borderRadius: '50%',
+	      height: size,
+	      width: size
+	    },
+	    icon: {
+	      color: color || avatar.color,
+	      width: size * 0.6,
+	      height: size * 0.6,
+	      fontSize: size * 0.6,
+	      margin: size * 0.2
+	    }
+	  };
+	
+	  return styles;
+	}
+	
+	var Avatar = function (_Component) {
+	  _inherits(Avatar, _Component);
+	
+	  function Avatar() {
+	    _classCallCheck(this, Avatar);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Avatar).apply(this, arguments));
+	  }
+	
+	  _createClass(Avatar, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var backgroundColor = _props.backgroundColor;
+	      var icon = _props.icon;
+	      var src = _props.src;
+	      var style = _props.style;
+	      var className = _props.className;
+	
+	      var other = _objectWithoutProperties(_props, ['backgroundColor', 'icon', 'src', 'style', 'className']);
+	
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+	
+	      var styles = getStyles(this.props, this.context);
+	
+	      if (src) {
+	        return _react2.default.createElement('img', _extends({
+	          style: prepareStyles((0, _simpleAssign2.default)(styles.root, style))
+	        }, other, {
+	          src: src,
+	          className: className
+	        }));
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          _extends({}, other, {
+	            style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)),
+	            className: className
+	          }),
+	          icon && _react2.default.cloneElement(icon, {
+	            color: styles.icon.color,
+	            style: (0, _simpleAssign2.default)(styles.icon, icon.props.style)
+	          }),
+	          this.props.children
+	        );
+	      }
+	    }
+	  }]);
+	
+	  return Avatar;
+	}(_react.Component);
+	
+	Avatar.muiName = 'Avatar';
+	Avatar.propTypes = {
+	  /**
+	   * The backgroundColor of the avatar. Does not apply to image avatars.
+	   */
+	  backgroundColor: _react.PropTypes.string,
+	  /**
+	   * Can be used, for instance, to render a letter inside the avatar.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * The css class name of the root `div` or `img` element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * The icon or letter's color.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * This is the SvgIcon or FontIcon to be used inside the avatar.
+	   */
+	  icon: _react.PropTypes.element,
+	  /**
+	   * This is the size of the avatar in pixels.
+	   */
+	  size: _react.PropTypes.number,
+	  /**
+	   * If passed in, this component will render an img element. Otherwise, a div will be rendered.
+	   */
+	  src: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	};
+	Avatar.defaultProps = {
+	  size: 40
+	};
+	Avatar.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	exports.default = Avatar;
 
 /***/ }
 /******/ ]);

@@ -1,6 +1,7 @@
 // Index.react.js : Navigation bar [parent of all UI components]
 
 import AppBar from 'material-ui/AppBar'
+import Avatar from 'material-ui/Avatar'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -8,6 +9,8 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import React from 'react'
+import UserActions from '../actions/UserActions'
+import UserStore from '../stores/UserStore'
 import { white } from 'material-ui/styles/colors'
 
 // Styles
@@ -15,11 +18,48 @@ const style = {
     color: white
 }
 
+// UserStore
+function getUserStore() {
+    return {
+        userProfile: UserStore.getUserProfile(),
+        logoutMsg: UserStore.getLogoutMsg()
+    }
+}
+
 // Navigation bar
 var NavigationBar = React.createClass({
     //
+    contextTypes: {
+        router: React.PropTypes.object
+    },
+    //
+    getInitialState: function() {
+        return getUserStore()
+    },
+    //
+    _onChange: function() {
+        this.setState(getUserStore())
+    },
+    //
     handleLogout: function() {
-        alert('Do not logout man!')
+        UserActions.logout()
+    },
+    //
+    componentDidMount: function() {
+        //
+        UserActions.getUserProfile()
+        UserStore.addChangeListener(this._onChange)
+    },
+    componentDidUpdate: function() {
+        //
+        if(this.state.logoutMsg.severity === 'S') {
+            this.context.router.push('/')
+        }
+    },
+    //
+    componentWillUnmount: function() {
+        //
+        UserStore.removeChangeListener(this._onChange)
     },
     // render
     render: function() {
@@ -30,8 +70,11 @@ var NavigationBar = React.createClass({
                         title='book.Trade'
                         iconElementRight={
                             <div>
-                                <FlatButton label='Login' style={style}  />
-                                <FlatButton label='Signup' style={style} />
+                                {
+                                    this.state.userProfile ?
+                                        <Avatar>{this.state.userProfile.username.split('')[0].toUpperCase()}</Avatar>
+                                    : null
+                                }
                                 <IconMenu
                                     iconButtonElement={
                                         <IconButton><MoreVertIcon /></IconButton>

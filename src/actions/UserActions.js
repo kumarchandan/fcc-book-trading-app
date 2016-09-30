@@ -22,6 +22,24 @@ var UserActions = {
         })
         //
         UserAPI.login(userData)
+    },
+    // Get User Profile
+    getUserProfile: function() {
+        //
+        AppDispatcher.handleAction({
+            actionType: UserConstants.GET_USER_PROFILE
+        })
+        //
+        UserAPI.getUserProfile()
+    },
+    // Logout
+    logout: function() {
+        //
+        AppDispatcher.handleAction({
+            actionType: UserConstants.LOGOUT
+        })
+        //
+        UserAPI.logout()
     }
 }
 

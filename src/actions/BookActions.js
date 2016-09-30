@@ -20,6 +20,22 @@ var BookActions = {
         })
         //
         BookAPI.addBook(id, title, cover)
+    },
+    //
+    getAllBooks: function(bookName) {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.GET_ALL_BOOKS
+        })
+        //
+        BookAPI.getAllBooks()
+    },
+    //
+    getMyBooks: function() {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.GET_MY_BOOKS,
+        })
+        //
+        BookAPI.getMyBooks()
     }
 }
 

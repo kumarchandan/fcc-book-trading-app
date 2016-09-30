@@ -25,11 +25,19 @@ function getMyBooks(req, res) {
         BookModel.find({ owner: owner }, function(err, mybooks) {
             if(err) throw err
             //
-            res.status(200).json({
-                data: {
-                    items: mybooks
-                }
-            })
+            if(mybooks.length !== 0) {
+                res.status(200).json({
+                    data: {
+                        items: mybooks
+                    }
+                })
+            } else {
+                res.status(200).json({
+                    data: {
+                        items: null
+                    }
+                })
+            }
         })
     }
 }

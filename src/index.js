@@ -1,6 +1,5 @@
 // index.js - UI Controller
 
-import BookAPI from './utils/BookAPI'
 import Books from './components/Books.react'
 import Home from './components/Home.react'
 import Index from './components/Index.react'
@@ -14,10 +13,6 @@ import UserAPI from './utils/UserAPI'
 
 // For Overall App - onTouchTap() for onClick
 injectTapEventPlugin()
-
-// Load available books
-BookAPI.getAllBooks()
-BookAPI.getMyBooks()
 
 // onEnter check isLoggedIn
 function isLoggedIn(nextState, replace, done) {

@@ -18,6 +18,20 @@ var UserServerActions = {
             actionType: UserConstants.LOGIN_RESPONSE,
             data: msg
         })
+    },
+    // Logout
+    logout: function(msg) {
+        AppDispatcher.handleServerAction({
+            actionType: UserConstants.LOGOUT_RESPONSE,
+            data: msg
+        })
+    },
+    // Get User Profile
+    getUserProfile: function(userProfile) {
+        AppDispatcher.handleServerAction({
+            actionType: UserConstants.GET_USER_PROFILE_RESPONSE,
+            data: userProfile
+        })
     }
 }
 
