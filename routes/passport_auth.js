@@ -55,12 +55,7 @@ module.exports = function(app, passport) {
     // Logout
     app.get('/logout', function(req, res, next) {
         req.logout()
-        res.status(200).json({
-            msg: {
-                text: 'User loggedout successfully!',
-                severity: 'S'
-            }
-        })
+        res.redirect('/')
     })
 
 }

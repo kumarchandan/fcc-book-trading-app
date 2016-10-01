@@ -34,6 +34,7 @@ ReactDOM.render(
         <Router history={hashHistory}>
             <Route path='/' component={Index}>
                 <IndexRoute component={Home} />
+                <Route path='/home' component={Home}></Route>
                 <Route path='/books' component={Books} onEnter={isLoggedIn}></Route>
                 <Route path='/signup' component={Signup} ></Route>
                 <Route path='/login' component={Login} ></Route>

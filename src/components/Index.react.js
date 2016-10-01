@@ -21,17 +21,12 @@ const style = {
 // UserStore
 function getUserStore() {
     return {
-        userProfile: UserStore.getUserProfile(),
-        logoutMsg: UserStore.getLogoutMsg()
+        userProfile: UserStore.getUserProfile()
     }
 }
 
 // Navigation bar
 var NavigationBar = React.createClass({
-    //
-    contextTypes: {
-        router: React.PropTypes.object
-    },
     //
     getInitialState: function() {
         return getUserStore()
@@ -42,23 +37,14 @@ var NavigationBar = React.createClass({
     },
     //
     handleLogout: function() {
-        UserActions.logout()
+        window.location.href = '/logout'
     },
     //
     componentDidMount: function() {
-        //
-        UserActions.getUserProfile()
         UserStore.addChangeListener(this._onChange)
-    },
-    componentDidUpdate: function() {
-        //
-        if(this.state.logoutMsg.severity === 'S') {
-            this.context.router.push('/')
-        }
     },
     //
     componentWillUnmount: function() {
-        //
         UserStore.removeChangeListener(this._onChange)
     },
     // render

@@ -31,15 +31,6 @@ var UserActions = {
         })
         //
         UserAPI.getUserProfile()
-    },
-    // Logout
-    logout: function() {
-        //
-        AppDispatcher.handleAction({
-            actionType: UserConstants.LOGOUT
-        })
-        //
-        UserAPI.logout()
     }
 }
 

@@ -116,6 +116,7 @@
 	        _reactRouter.Route,
 	        { path: '/', component: _Index2.default },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/home', component: _Home2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/books', component: _Books2.default, onEnter: isLoggedIn }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/signup', component: _Signup2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _Login2.default })
@@ -35159,8 +35160,7 @@
 	// UserStore
 	function getUserStore() {
 	    return {
-	        userProfile: _UserStore2.default.getUserProfile(),
-	        logoutMsg: _UserStore2.default.getLogoutMsg()
+	        userProfile: _UserStore2.default.getUserProfile()
 	    };
 	}
 	
@@ -35168,10 +35168,6 @@
 	var NavigationBar = _react2.default.createClass({
 	    displayName: 'NavigationBar',
 	
-	    //
-	    contextTypes: {
-	        router: _react2.default.PropTypes.object
-	    },
 	    //
 	    getInitialState: function getInitialState() {
 	        return getUserStore();
@@ -35182,23 +35178,14 @@
 	    },
 	    //
 	    handleLogout: function handleLogout() {
-	        _UserActions2.default.logout();
+	        window.location.href = '/logout';
 	    },
 	    //
 	    componentDidMount: function componentDidMount() {
-	        //
-	        _UserActions2.default.getUserProfile();
 	        _UserStore2.default.addChangeListener(this._onChange);
-	    },
-	    componentDidUpdate: function componentDidUpdate() {
-	        //
-	        if (this.state.logoutMsg.severity === 'S') {
-	            this.context.router.push('/');
-	        }
 	    },
 	    //
 	    componentWillUnmount: function componentWillUnmount() {
-	        //
 	        _UserStore2.default.removeChangeListener(this._onChange);
 	    },
 	    // render
@@ -48234,15 +48221,6 @@
 	        });
 	        //
 	        _UserAPI2.default.getUserProfile();
-	    },
-	    // Logout
-	    logout: function logout() {
-	        //
-	        _AppDispatcher2.default.handleAction({
-	            actionType: _UserConstants2.default.LOGOUT
-	        });
-	        //
-	        _UserAPI2.default.logout();
 	    }
 	};
 	
@@ -48271,8 +48249,6 @@
 	    REGISTER_USER_RESPONSE: null,
 	    LOGIN: null,
 	    LOGIN_RESPONSE: null,
-	    LOGOUT: null,
-	    LOGOUT_RESPONSE: null,
 	    GET_USER_PROFILE: null,
 	    GET_USER_PROFILE_RESPONSE: null
 	}); // constants/UserConstants.js
@@ -48322,14 +48298,6 @@
 	            if (result.body.msg) {
 	                _UserServerActions2.default.login(result.body.msg);
 	            }
-	        });
-	    },
-	    // Logout
-	    logout: function logout() {
-	        _superagent2.default.get('/logout').end(function (err, result) {
-	            if (err) throw err;
-	            //
-	            _UserServerActions2.default.logout(result.body.msg);
 	        });
 	    },
 	    //
@@ -48399,13 +48367,6 @@
 	            data: msg
 	        });
 	    },
-	    // Logout
-	    logout: function logout(msg) {
-	        _AppDispatcher2.default.handleServerAction({
-	            actionType: _UserConstants2.default.LOGOUT_RESPONSE,
-	            data: msg
-	        });
-	    },
 	    // Get User Profile
 	    getUserProfile: function getUserProfile(userProfile) {
 	        _AppDispatcher2.default.handleServerAction({
@@ -48452,10 +48413,7 @@
 	    text: '',
 	    severity: ''
 	};
-	var _logoutMsg = {
-	    text: '',
-	    severity: ''
-	};
+	
 	// User Profile
 	var _userProfile = null;
 	
@@ -48465,9 +48423,6 @@
 	}
 	function loadLoginMsg(msg) {
 	    _loginMsg = msg;
-	}
-	function loadLogoutMsg(msg) {
-	    _logoutMsg = msg;
 	}
 	function loadUserProfile(userProfile) {
 	    _userProfile = userProfile;
@@ -48486,12 +48441,6 @@
 	        var temp = Object.assign({}, _loginMsg); // Clone entire object
 	        _loginMsg.text = '';
 	        _loginMsg.severity = '';
-	        return temp;
-	    },
-	    getLogoutMsg: function getLogoutMsg() {
-	        var temp = Object.assign({}, _logoutMsg);
-	        _logoutMsg.text = '';
-	        _logoutMsg.severity = '';
 	        return temp;
 	    },
 	    getUserProfile: function getUserProfile() {
@@ -48523,10 +48472,6 @@
 	            break;
 	        case _UserConstants2.default.GET_USER_PROFILE_RESPONSE:
 	            loadUserProfile(action.data);
-	            UserStore.emitChange();
-	            break;
-	        case _UserConstants2.default.LOGOUT_RESPONSE:
-	            loadLogoutMsg(action.data);
 	            UserStore.emitChange();
 	            break;
 	        default:

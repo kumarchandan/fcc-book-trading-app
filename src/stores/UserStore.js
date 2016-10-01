@@ -14,10 +14,7 @@ var _loginMsg = {
     text: '',
     severity: ''
 }
-var _logoutMsg = {
-    text: '',
-    severity: ''
-}
+
 // User Profile
 var _userProfile = null
 
@@ -27,9 +24,6 @@ function loadSignupMsg(msg) {
 }
 function loadLoginMsg(msg) {
     _loginMsg = msg
-}
-function loadLogoutMsg(msg) {
-    _logoutMsg = msg
 }
 function loadUserProfile(userProfile) {
     _userProfile = userProfile
@@ -48,12 +42,6 @@ var UserStore = _.extend({}, EventEmitter.prototype, {
         var temp = Object.assign({}, _loginMsg)     // Clone entire object
         _loginMsg.text = ''
         _loginMsg.severity = ''
-        return temp
-    },
-    getLogoutMsg: function() {
-        var temp = Object.assign({}, _logoutMsg)
-        _logoutMsg.text = ''
-        _logoutMsg.severity = ''
         return temp
     },
     getUserProfile: function() {
@@ -85,10 +73,6 @@ AppDispatcher.register(function(payload) {
             break
         case UserConstants.GET_USER_PROFILE_RESPONSE:
             loadUserProfile(action.data)
-            UserStore.emitChange()
-            break
-        case UserConstants.LOGOUT_RESPONSE:
-            loadLogoutMsg(action.data)
             UserStore.emitChange()
             break
         default:

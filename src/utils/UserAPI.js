@@ -29,14 +29,6 @@ var UserAPI = {
             }
         })
     },
-    // Logout
-    logout: function() {
-        request.get('/logout').end(function(err, result) {
-            if(err) throw err
-            //
-            UserServerActions.logout(result.body.msg)
-        })
-    },
     //
     isLoggedIn: function(done) {
         //
