@@ -2,7 +2,7 @@
 
 import AllBooks from './Books.AllBooks.react'
 import BookActions from '../actions/BookActions'
-import BooksList from './Books.Search.react'
+import BookSearchList from './Books.Search.react'
 import BookStore from '../stores/BookStore'
 import Divider from 'material-ui/Divider'
 import MyBooks from './Books.MyBooks.react'
@@ -11,13 +11,13 @@ import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import { Tab, Tabs } from 'material-ui/Tabs'
 
-// fill state from Store
+// Fill state from Store
 function getFromBookStore() {
     return {
         mybooks: BookStore.getMyBooks(),
-        books: BookStore.getBooks(),
+        booksList: BookStore.getBooks(),
         allBooks: BookStore.getAllBooks(),
-        msg: BookStore.getMsg()
+        msg: BookStore.getBookMsg()
     }
 }
 
@@ -34,7 +34,9 @@ var Books = React.createClass({
     handleAddBook: function() {
         //
         var bookName = this.inpAddBook.getValue()
-        BookActions.getBooks(bookName)
+        if(bookName !== '') {
+            BookActions.getBooks(bookName)
+        }
     },
     handleKeyDown: function(event) {
         if(event.keyCode === 13) {  // on Enter
@@ -65,10 +67,10 @@ var Books = React.createClass({
                         <AllBooks books={this.state.allBooks} />
                     </Tab>
                     <Tab label='My Books'>
+                        <TextField label='My Books' hintText='Search your book..' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} fullWidth={true} />
+
+                        <BookSearchList books={this.state.booksList} />
                         <h3>My Books List</h3>
-                        <TextField label='My Books' hintText='Add your book...' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} fullWidth={true} />
-                        <Divider />
-                        <BooksList books={this.state.books} />
                         <MyBooks mybooks={this.state.mybooks} />
                     </Tab>
                     <Tab label='Trading Status'>

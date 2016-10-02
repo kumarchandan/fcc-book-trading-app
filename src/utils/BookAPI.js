@@ -33,7 +33,7 @@ var BookAPI = {
             BookServerActions.getMyBooks(result.body.data)
         })
     },
-    //
+    // Add Book
     addBook: function(id, title, cover) {
         //
         request.post('/api/books/add').send({ id: id, title: title, cover: cover }).end(function(err, result) {
@@ -41,6 +41,16 @@ var BookAPI = {
             if(err) throw err
             //
             BookServerActions.addBook(result.body.data)
+        })
+    },
+    // Remove Book
+    removeBook: function(_id) {
+        //
+        request.post('/api/books/remove').send( { _id: _id }).end(function(err, result) {
+            //
+            if(err) throw err
+            //
+            BookServerActions.removeBook(result.body.data)
         })
     }
 }

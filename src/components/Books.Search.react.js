@@ -1,7 +1,7 @@
 // BooksList.react.js
 
 import BookActions from '../actions/BookActions'
-import FavoriteBorder from 'material-ui/svg-icons/action/favorite-border'
+import AddIcon from 'material-ui/svg-icons/content/add'
 import IconButton from 'material-ui/IconButton'
 import React from 'react'
 import Subheader from 'material-ui/Subheader'
@@ -23,14 +23,14 @@ const styles = {
 }
 
 var BooksList = React.createClass({
-    //
+    // Add Book
     handleAddBook: function(id, title, cover) {
         BookActions.addBook(id, title, cover)
     },
     //
     render: function() {
         //
-        if(this.props.books.length === 0) {
+        if(!this.props.books || this.props.books.length === 0) {
             return null
         }
         //
@@ -47,7 +47,7 @@ var BooksList = React.createClass({
                                     onTouchTap={() => (this.handleAddBook(book.id,book.volumeInfo.title, book.volumeInfo.imageLinks.thumbnail))}
                                     tooltip={book.volumeInfo.title}
                                     tooltipPosition='top-left'>
-                                <FavoriteBorder color='white' /></IconButton>
+                                <AddIcon color='white' /></IconButton>
                             }
                         >
                             <img src={book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : null } alt={book.volumeInfo.title} />

@@ -1,7 +1,7 @@
 // components/BooksMyBooks.react.js
 
 import BookActions from '../actions/BookActions'
-import FavoriteBorder from 'material-ui/svg-icons/action/favorite-border'
+import ClearIcon from 'material-ui/svg-icons/content/clear'
 import IconButton from 'material-ui/IconButton'
 import React from 'react'
 import Subheader from 'material-ui/Subheader'
@@ -25,13 +25,13 @@ const styles = {
 //
 var MyBooks = React.createClass({
     //
-    removeBook: function() {
-        alert('we will remove the book.')
+    removeBook: function(_id) {
+        BookActions.removeBook(_id)
     },
     //
     render: function() {
         //
-        if(this.props.mybooks.length === 0) {
+        if(!this.props.mybooks || this.props.mybooks.length === 0) {
             return null
         }
         //
@@ -44,10 +44,10 @@ var MyBooks = React.createClass({
                             title={book.title}
                             actionIcon={
                                 <IconButton
-                                    onTouchTap={() => (this.removeBook())}
+                                    onTouchTap={() => (this.removeBook(book._id))}
                                     tooltip={book.title}
                                     tooltipPosition='top-left'>
-                                <FavoriteBorder color='white' /></IconButton>
+                                <ClearIcon color='white' /></IconButton>
                             }
                         >
                             <img src={book.cover === '' ? null : book.cover } alt={book.title} />

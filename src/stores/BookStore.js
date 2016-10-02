@@ -8,16 +8,39 @@ import BookConstants from '../constants/BookConstants'
 //
 var _books = []
 var _allBooks = []
-var _msg = ''
+var _bookMsg = ''
 var _myBooks = []
 
 //
 function loadBooks(data) {
     _books = data.items
 }
+// Add Book
+function addBook(data) {
+    // 
+    _bookMsg = data.msg
+    //
+    _myBooks.push(data.book)
+    _allBooks.push(data.book)
+}
 //
-function loadMsg(data) {
-    _msg = data.msg
+function removeBook(data) {
+    //
+    _bookMsg = data.msg
+    //
+    if(data._id) {
+        // Remove from MyBooks
+        let index = _myBooks.findIndex(function(book, index) {
+            return book._id === data._id
+        })
+        _myBooks.splice(index, 1)
+
+        // Remove from AllBooks
+        let i = _allBooks.findIndex(function(book, index) {
+            return book._id === data._id
+        })
+        _allBooks.splice(i, 1)
+    }
 }
 //
 function loadAllBooks(data) {
@@ -34,9 +57,9 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
         return _books
     },
     //
-    getMsg: function() {
-        var temp = _msg
-        _msg = ''
+    getBookMsg: function() {
+        var temp = _bookMsg
+        _bookMsg = ''
         return temp
     },
     //
@@ -69,12 +92,12 @@ AppDispatcher.register(function(payload) {
     //
     switch(action.actionType) {
         //
-        case BookConstants.GET_BOOKS_RESPONSE:
+        case BookConstants.GET_BOOKS_RESPONSE:      // Search Books
             loadBooks(action.data)
             BookStore.emitChange()
             break
         case BookConstants.ADD_BOOK_RESPONSE:
-            loadMsg(action.data)
+            addBook(action.data)
             BookStore.emitChange()
             break
         case BookConstants.GET_ALL_BOOKS_RESPONSE:
@@ -83,6 +106,10 @@ AppDispatcher.register(function(payload) {
             break
         case BookConstants.GET_MY_BOOKS_RESPONSE:
             loadMyBooks(action.data)
+            BookStore.emitChange()
+            break
+        case BookConstants.REMOVE_BOOK_RESPONSE:
+            removeBook(action.data)
             BookStore.emitChange()
             break
         default:

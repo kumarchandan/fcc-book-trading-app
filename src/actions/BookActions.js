@@ -36,6 +36,14 @@ var BookActions = {
         })
         //
         BookAPI.getMyBooks()
+    },
+    // Remove Book
+    removeBook: function(_id) {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.REMOVE_BOOK
+        })
+        //
+        BookAPI.removeBook(_id)
     }
 }
 

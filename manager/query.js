@@ -24,20 +24,12 @@ function getMyBooks(req, res) {
     if(owner) {
         BookModel.find({ owner: owner }, function(err, mybooks) {
             if(err) throw err
-            //
-            if(mybooks.length !== 0) {
-                res.status(200).json({
-                    data: {
-                        items: mybooks
-                    }
-                })
-            } else {
-                res.status(200).json({
-                    data: {
-                        items: null
-                    }
-                })
-            }
+            // mybooks will be 0 length array if no values found
+            res.status(200).json({
+                data: {
+                    items: mybooks
+                }
+            })
         })
     }
 }

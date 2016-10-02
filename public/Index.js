@@ -171,7 +171,7 @@
 	            _BookServerActions2.default.getMyBooks(result.body.data);
 	        });
 	    },
-	    //
+	    // Add Book
 	    addBook: function addBook(id, title, cover) {
 	        //
 	        request.post('/api/books/add').send({ id: id, title: title, cover: cover }).end(function (err, result) {
@@ -179,6 +179,16 @@
 	            if (err) throw err;
 	            //
 	            _BookServerActions2.default.addBook(result.body.data);
+	        });
+	    },
+	    // Remove Book
+	    removeBook: function removeBook(_id) {
+	        //
+	        request.post('/api/books/remove').send({ _id: _id }).end(function (err, result) {
+	            //
+	            if (err) throw err;
+	            //
+	            _BookServerActions2.default.removeBook(result.body.data);
 	        });
 	    }
 	};
@@ -207,28 +217,35 @@
 	// actions/BookServerActions.js
 	
 	var BookServerActions = {
-	    //
+	    // Add Book
 	    addBook: function addBook(data) {
 	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.ADD_BOOK_RESPONSE,
 	            data: data
 	        });
 	    },
-	    //
+	    // Remove Book
+	    removeBook: function removeBook(data) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _BookConstants2.default.REMOVE_BOOK_RESPONSE,
+	            data: data
+	        });
+	    },
+	    // Search Book
 	    getBooks: function getBooks(data) {
 	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_BOOKS_RESPONSE,
 	            data: data
 	        });
 	    },
-	    //
+	    // Get All Books
 	    getAllBooks: function getAllBooks(data) {
 	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_ALL_BOOKS_RESPONSE,
 	            data: data
 	        });
 	    },
-	    //
+	    // Get My Books
 	    getMyBooks: function getMyBooks(data) {
 	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_MY_BOOKS_RESPONSE,
@@ -800,6 +817,8 @@
 	module.exports = (0, _keyMirror2.default)({
 	    ADD_BOOK: null,
 	    ADD_BOOK_RESPONSE: null,
+	    REMOVE_BOOK: null,
+	    REMOVE_BOOK_RESPONSE: null,
 	    GET_BOOKS: null,
 	    GET_BOOKS_RESPONSE: null,
 	    GET_ALL_BOOKS: null,
@@ -2490,15 +2509,15 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// fill state from Store
+	// Fill state from Store
 	// components/Books.react.js
 	
 	function getFromBookStore() {
 	    return {
 	        mybooks: _BookStore2.default.getMyBooks(),
-	        books: _BookStore2.default.getBooks(),
+	        booksList: _BookStore2.default.getBooks(),
 	        allBooks: _BookStore2.default.getAllBooks(),
-	        msg: _BookStore2.default.getMsg()
+	        msg: _BookStore2.default.getBookMsg()
 	    };
 	}
 	
@@ -2517,7 +2536,9 @@
 	    handleAddBook: function handleAddBook() {
 	        //
 	        var bookName = this.inpAddBook.getValue();
-	        _BookActions2.default.getBooks(bookName);
+	        if (bookName !== '') {
+	            _BookActions2.default.getBooks(bookName);
+	        }
 	    },
 	    handleKeyDown: function handleKeyDown(event) {
 	        if (event.keyCode === 13) {
@@ -2562,16 +2583,15 @@
 	                _react2.default.createElement(
 	                    _Tabs.Tab,
 	                    { label: 'My Books' },
+	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Search your book..', ref: function ref(_ref) {
+	                            return _this.inpAddBook = _ref;
+	                        }, onKeyDown: this.handleKeyDown, fullWidth: true }),
+	                    _react2.default.createElement(_BooksSearch2.default, { books: this.state.booksList }),
 	                    _react2.default.createElement(
 	                        'h3',
 	                        null,
 	                        'My Books List'
 	                    ),
-	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Add your book...', ref: function ref(_ref) {
-	                            return _this.inpAddBook = _ref;
-	                        }, onKeyDown: this.handleKeyDown, fullWidth: true }),
-	                    _react2.default.createElement(_Divider2.default, null),
-	                    _react2.default.createElement(_BooksSearch2.default, { books: this.state.books }),
 	                    _react2.default.createElement(_BooksMyBooks2.default, { mybooks: this.state.mybooks })
 	                ),
 	                _react2.default.createElement(
@@ -2745,6 +2765,14 @@
 	        });
 	        //
 	        _BookAPI2.default.getMyBooks();
+	    },
+	    // Remove Book
+	    removeBook: function removeBook(_id) {
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _BookConstants2.default.REMOVE_BOOK
+	        });
+	        //
+	        _BookAPI2.default.removeBook(_id);
 	    }
 	}; // actions/BookActions.js
 	
@@ -28699,9 +28727,9 @@
 	
 	var _BookActions2 = _interopRequireDefault(_BookActions);
 	
-	var _favoriteBorder = __webpack_require__(/*! material-ui/svg-icons/action/favorite-border */ 18);
+	var _add = __webpack_require__(/*! material-ui/svg-icons/content/add */ 533);
 	
-	var _favoriteBorder2 = _interopRequireDefault(_favoriteBorder);
+	var _add2 = _interopRequireDefault(_add);
 	
 	var _IconButton = __webpack_require__(/*! material-ui/IconButton */ 66);
 	
@@ -28739,7 +28767,7 @@
 	var BooksList = _react2.default.createClass({
 	    displayName: 'BooksList',
 	
-	    //
+	    // Add Book
 	    handleAddBook: function handleAddBook(id, title, cover) {
 	        _BookActions2.default.addBook(id, title, cover);
 	    },
@@ -28748,7 +28776,7 @@
 	        var _this = this;
 	
 	        //
-	        if (this.props.books.length === 0) {
+	        if (!this.props.books || this.props.books.length === 0) {
 	            return null;
 	        }
 	        //
@@ -28778,7 +28806,7 @@
 	                                    },
 	                                    tooltip: book.volumeInfo.title,
 	                                    tooltipPosition: 'top-left' },
-	                                _react2.default.createElement(_favoriteBorder2.default, { color: 'white' })
+	                                _react2.default.createElement(_add2.default, { color: 'white' })
 	                            )
 	                        },
 	                        _react2.default.createElement('img', { src: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : null, alt: book.volumeInfo.title })
@@ -28819,16 +28847,39 @@
 	//
 	var _books = [];
 	var _allBooks = [];
-	var _msg = '';
+	var _bookMsg = '';
 	var _myBooks = [];
 	
 	//
 	function loadBooks(data) {
 	    _books = data.items;
 	}
+	// Add Book
+	function addBook(data) {
+	    // 
+	    _bookMsg = data.msg;
+	    //
+	    _myBooks.push(data.book);
+	    _allBooks.push(data.book);
+	}
 	//
-	function loadMsg(data) {
-	    _msg = data.msg;
+	function removeBook(data) {
+	    //
+	    _bookMsg = data.msg;
+	    //
+	    if (data._id) {
+	        // Remove from MyBooks
+	        var index = _myBooks.findIndex(function (book, index) {
+	            return book._id === data._id;
+	        });
+	        _myBooks.splice(index, 1);
+	
+	        // Remove from AllBooks
+	        var i = _allBooks.findIndex(function (book, index) {
+	            return book._id === data._id;
+	        });
+	        _allBooks.splice(i, 1);
+	    }
 	}
 	//
 	function loadAllBooks(data) {
@@ -28845,9 +28896,9 @@
 	        return _books;
 	    },
 	    //
-	    getMsg: function getMsg() {
-	        var temp = _msg;
-	        _msg = '';
+	    getBookMsg: function getBookMsg() {
+	        var temp = _bookMsg;
+	        _bookMsg = '';
 	        return temp;
 	    },
 	    //
@@ -28881,11 +28932,12 @@
 	    switch (action.actionType) {
 	        //
 	        case _BookConstants2.default.GET_BOOKS_RESPONSE:
+	            // Search Books
 	            loadBooks(action.data);
 	            BookStore.emitChange();
 	            break;
 	        case _BookConstants2.default.ADD_BOOK_RESPONSE:
-	            loadMsg(action.data);
+	            addBook(action.data);
 	            BookStore.emitChange();
 	            break;
 	        case _BookConstants2.default.GET_ALL_BOOKS_RESPONSE:
@@ -28894,6 +28946,10 @@
 	            break;
 	        case _BookConstants2.default.GET_MY_BOOKS_RESPONSE:
 	            loadMyBooks(action.data);
+	            BookStore.emitChange();
+	            break;
+	        case _BookConstants2.default.REMOVE_BOOK_RESPONSE:
+	            removeBook(action.data);
 	            BookStore.emitChange();
 	            break;
 	        default:
@@ -54437,9 +54493,9 @@
 	
 	var _BookActions2 = _interopRequireDefault(_BookActions);
 	
-	var _favoriteBorder = __webpack_require__(/*! material-ui/svg-icons/action/favorite-border */ 18);
+	var _clear = __webpack_require__(/*! material-ui/svg-icons/content/clear */ 534);
 	
-	var _favoriteBorder2 = _interopRequireDefault(_favoriteBorder);
+	var _clear2 = _interopRequireDefault(_clear);
 	
 	var _IconButton = __webpack_require__(/*! material-ui/IconButton */ 66);
 	
@@ -54479,15 +54535,15 @@
 	    displayName: 'MyBooks',
 	
 	    //
-	    removeBook: function removeBook() {
-	        alert('we will remove the book.');
+	    removeBook: function removeBook(_id) {
+	        _BookActions2.default.removeBook(_id);
 	    },
 	    //
 	    render: function render() {
 	        var _this = this;
 	
 	        //
-	        if (this.props.mybooks.length === 0) {
+	        if (!this.props.mybooks || this.props.mybooks.length === 0) {
 	            return null;
 	        }
 	        //
@@ -54507,11 +54563,11 @@
 	                                _IconButton2.default,
 	                                {
 	                                    onTouchTap: function onTouchTap() {
-	                                        return _this.removeBook();
+	                                        return _this.removeBook(book._id);
 	                                    },
 	                                    tooltip: book.title,
 	                                    tooltipPosition: 'top-left' },
-	                                _react2.default.createElement(_favoriteBorder2.default, { color: 'white' })
+	                                _react2.default.createElement(_clear2.default, { color: 'white' })
 	                            )
 	                        },
 	                        _react2.default.createElement('img', { src: book.cover === '' ? null : book.cover, alt: book.title })
@@ -54708,6 +54764,86 @@
 	  muiTheme: _react.PropTypes.object.isRequired
 	};
 	exports.default = Avatar;
+
+/***/ },
+/* 533 */
+/*!************************************************!*\
+  !*** ./~/material-ui/svg-icons/content/add.js ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 19);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _pure = __webpack_require__(/*! recompose/pure */ 51);
+	
+	var _pure2 = _interopRequireDefault(_pure);
+	
+	var _SvgIcon = __webpack_require__(/*! ../../SvgIcon */ 62);
+	
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ContentAdd = function ContentAdd(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z' })
+	  );
+	};
+	ContentAdd = (0, _pure2.default)(ContentAdd);
+	ContentAdd.displayName = 'ContentAdd';
+	ContentAdd.muiName = 'SvgIcon';
+	
+	exports.default = ContentAdd;
+
+/***/ },
+/* 534 */
+/*!**************************************************!*\
+  !*** ./~/material-ui/svg-icons/content/clear.js ***!
+  \**************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 19);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _pure = __webpack_require__(/*! recompose/pure */ 51);
+	
+	var _pure2 = _interopRequireDefault(_pure);
+	
+	var _SvgIcon = __webpack_require__(/*! ../../SvgIcon */ 62);
+	
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ContentClear = function ContentClear(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' })
+	  );
+	};
+	ContentClear = (0, _pure2.default)(ContentClear);
+	ContentClear.displayName = 'ContentClear';
+	ContentClear.muiName = 'SvgIcon';
+	
+	exports.default = ContentClear;
 
 /***/ }
 /******/ ]);
