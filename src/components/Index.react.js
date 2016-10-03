@@ -2,9 +2,12 @@
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
+import Drawer from 'material-ui/Drawer'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
+import { Link } from 'react-router'
+import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -21,7 +24,8 @@ const style = {
 // UserStore
 function getUserStore() {
     return {
-        userProfile: UserStore.getUserProfile()
+        userProfile: UserStore.getUserProfile(),
+        drawerOpen: false
     }
 }
 
@@ -36,7 +40,13 @@ var NavigationBar = React.createClass({
         this.setState(getUserStore())
     },
     //
-    handleLogout: function() {
+    _handleDrawerToggle: function() {
+        this.setState({
+            drawerOpen: !this.state.drawerOpen
+        })
+    },
+    //
+    _handleLogout: function() {
         window.location.href = '/logout'
     },
     //
@@ -52,6 +62,7 @@ var NavigationBar = React.createClass({
         return (
             <div>
                 <MuiThemeProvider>
+                <div>
                     <AppBar
                         title='book.Trade'
                         iconElementRight={
@@ -67,14 +78,30 @@ var NavigationBar = React.createClass({
                                     }
                                     targetOrigin={ { horizontal:'right', vertical: 'top' } }
                                     anchorOrigin={ { horizontal:'right', vertical: 'top' } }
+                                    iconStyle= {style}
                                 >
-                                    <MenuItem primaryText='Settings' />
+                                    <MenuItem primaryText='Settings' onTouchTap={this._handleDrawerToggle} />
                                     <MenuItem primaryText='Help' />
-                                    <MenuItem primaryText='Logout' onTouchTap={this.handleLogout} />
+                                    <MenuItem primaryText='Logout' onTouchTap={this._handleLogout} />
                                 </IconMenu>
                             </div>
                         }
+                        onLeftIconButtonTouchTap={this._handleDrawerToggle}
                     />
+                    <Drawer open={this.state.drawerOpen} docked={false} onRequestChange={ (drawerOpen) => this.setState({drawerOpen}) }>
+                        {
+                            this.state.userProfile ?
+                            <Menu>
+                                <MenuItem>
+                                    <Avatar>{this.state.userProfile.username.split('')[0].toUpperCase()}</Avatar> {this.state.userProfile.username}
+                                </MenuItem>
+                                <MenuItem onTouchTap={this._handleDrawerToggle}><Link to='/profile'>Profile</Link></MenuItem>
+                                <MenuItem onTouchTap={this._handleDrawerToggle}>App Settings</MenuItem>
+                            </Menu>
+                        : null
+                        }
+                    </Drawer>
+                </div>
                 </MuiThemeProvider>
                 <MuiThemeProvider>
                     {this.props.children}

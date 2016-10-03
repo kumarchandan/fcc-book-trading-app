@@ -43,6 +43,10 @@ function removeBook(data) {
     }
 }
 //
+function clearSearch() {
+    _books = []
+}
+//
 function loadAllBooks(data) {
     _allBooks = data.items
 }
@@ -76,11 +80,11 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
         this.emit('change')
     },
     //
-    addListener: function(done) {
+    addChangeListener: function(done) {
         this.on('change', done)
     },
     //
-    removeListener: function(done) {
+    removeChangeListener: function(done) {
         this.removeListener('change', done)
     }
 })
@@ -110,6 +114,10 @@ AppDispatcher.register(function(payload) {
             break
         case BookConstants.REMOVE_BOOK_RESPONSE:
             removeBook(action.data)
+            BookStore.emitChange()
+            break
+        case BookConstants.CLEAR_SEARCH:
+            clearSearch()
             BookStore.emitChange()
             break
         default:

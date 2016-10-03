@@ -6,12 +6,12 @@ import BookConstants from '../constants/BookConstants'
 
 var BookActions = {
     //
-    getBooks: function(bookName) {
+    getBooks: function(bookName, sIndex) {
         AppDispatcher.handleAction({
             actionType: BookConstants.GET_BOOKS
         })
         //
-        BookAPI.getBooks(bookName)
+        BookAPI.getBooks(bookName, sIndex)
     },
     //
     addBook: function(id, title, cover) {
@@ -44,6 +44,12 @@ var BookActions = {
         })
         //
         BookAPI.removeBook(_id)
+    },
+    // Clear Search
+    clearSearch: function() {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.CLEAR_SEARCH
+        })
     }
 }
 

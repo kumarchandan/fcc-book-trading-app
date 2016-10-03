@@ -10,9 +10,13 @@ import ReactDOM from 'react-dom'
 import { Router, Route, hashHistory, IndexRoute } from 'react-router'
 import Signup from './components/Signup.react'
 import UserAPI from './utils/UserAPI'
+import UserProfile from './components/UserProfile.react'
 
 // For Overall App - onTouchTap() for onClick
 injectTapEventPlugin()
+
+// Load User Profile if logged in (works for refresh :))
+UserAPI.getUserProfile()
 
 // onEnter check isLoggedIn
 function isLoggedIn(nextState, replace, done) {
@@ -38,6 +42,7 @@ ReactDOM.render(
                 <Route path='/books' component={Books} onEnter={isLoggedIn}></Route>
                 <Route path='/signup' component={Signup} ></Route>
                 <Route path='/login' component={Login} ></Route>
+                <Route path='/profile' component={UserProfile} onEnter={isLoggedIn}></Route>
             </Route>
         </Router>
     ), document.getElementById('content'))

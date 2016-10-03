@@ -16,9 +16,9 @@ var BookAPI = {
         })
     },
     //
-    getBooks: function(bookName) {
+    getBooks: function(bookName, sIndex) {
         //
-        request.get('/api/books/search?bookName='+ bookName).end(function(err, result) {
+        request.get('/api/books/search?bookName='+ bookName +'&sIndex='+ sIndex).end(function(err, result) {
             //
             if(err) throw err
             //

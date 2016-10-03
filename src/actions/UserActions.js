@@ -31,6 +31,13 @@ var UserActions = {
         })
         //
         UserAPI.getUserProfile()
+    },
+    // Update User Profile
+    updateUserProfile: function() {
+        //
+        AppDispatcher.handleAction({
+            actionType: UserConstants.UPDATE_USER_PROFILE
+        })
     }
 }
 

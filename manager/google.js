@@ -5,8 +5,8 @@ var googleBooks = require('googleapis').books('v1')
 
 function getBooks(req, res) {
     //
-    var bookName = req.query.bookName
-    var startIndex = 0      // handle pagination using startIndex
+    const bookName = req.query.bookName
+    const startIndex = req.query.sIndex || 0      // handle pagination using startIndex
     const maxResults = 40
     //
     googleBooks.volumes.list({
