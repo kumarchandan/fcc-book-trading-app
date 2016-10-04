@@ -47143,7 +47143,7 @@
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
-	        msg: _UserStore2.default.getLoginMsg()
+	        msg: _UserStore2.default.getMsg()
 	    };
 	}
 	
@@ -47176,7 +47176,6 @@
 	        });
 	    },
 	    submitForm: function submitForm(data) {
-	        console.log(JSON.stringify(data));
 	        _UserActions2.default.login(data);
 	    },
 	    notifyFormError: function notifyFormError(data) {
@@ -48399,11 +48398,13 @@
 	        _UserAPI2.default.getUserProfile();
 	    },
 	    // Update User Profile
-	    updateUserProfile: function updateUserProfile() {
+	    updateUserProfile: function updateUserProfile(userData) {
 	        //
 	        _AppDispatcher2.default.handleAction({
 	            actionType: _UserConstants2.default.UPDATE_USER_PROFILE
 	        });
+	        //
+	        _UserAPI2.default.updateUserProfile(userData);
 	    }
 	};
 	
@@ -48434,7 +48435,8 @@
 	    LOGIN_RESPONSE: null,
 	    GET_USER_PROFILE: null,
 	    GET_USER_PROFILE_RESPONSE: null,
-	    UPDATE_USER_PROFILE: null
+	    UPDATE_USER_PROFILE: null,
+	    UPDATE_USER_PROFILE_RESPONSE: null
 	}); // constants/UserConstants.js
 
 /***/ },
@@ -48509,9 +48511,19 @@
 	                _UserServerActions2.default.getUserProfile(null);
 	            }
 	        });
+	    },
+	    //
+	    updateUserProfile: function updateUserProfile(user) {
+	        _superagent2.default.post('/api/user/update').send({ user: user }).end(function (err, result) {
+	            //
+	            if (err) throw err;
+	            //
+	            _UserServerActions2.default.updateUserProfile(result.body.msg);
+	        });
 	    }
 	};
 	
+	//
 	module.exports = UserAPI;
 
 /***/ },
@@ -48557,6 +48569,13 @@
 	            actionType: _UserConstants2.default.GET_USER_PROFILE_RESPONSE,
 	            data: userProfile
 	        });
+	    },
+	    // Update User Profile
+	    updateUserProfile: function updateUserProfile(msg) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _UserConstants2.default.UPDATE_USER_PROFILE_RESPONSE,
+	            data: msg
+	        });
 	    }
 	};
 	
@@ -48589,11 +48608,7 @@
 	//
 	// stores/UserStore.js
 	
-	var _signupMsg = {
-	    text: '',
-	    severity: ''
-	};
-	var _loginMsg = {
+	var _msg = {
 	    text: '',
 	    severity: ''
 	};
@@ -48602,11 +48617,8 @@
 	var _userProfile = null;
 	
 	//
-	function loadSignupMsg(msg) {
-	    _signupMsg = msg;
-	}
-	function loadLoginMsg(msg) {
-	    _loginMsg = msg;
+	function loadMsg(msg) {
+	    _msg = msg;
 	}
 	function loadUserProfile(userProfile) {
 	    _userProfile = userProfile;
@@ -48615,16 +48627,10 @@
 	//
 	var UserStore = _underscore2.default.extend({}, EventEmitter.prototype, {
 	    //
-	    getRegisterMsg: function getRegisterMsg() {
-	        var temp = Object.assign({}, _signupMsg); // clone entire object
-	        _signupMsg.text = '';
-	        _signupMsg.severity = '';
-	        return temp;
-	    },
-	    getLoginMsg: function getLoginMsg() {
-	        var temp = Object.assign({}, _loginMsg); // Clone entire object
-	        _loginMsg.text = '';
-	        _loginMsg.severity = '';
+	    getMsg: function getMsg() {
+	        var temp = Object.assign({}, _msg); // Clone entire object
+	        _msg.text = '';
+	        _msg.severity = '';
 	        return temp;
 	    },
 	    getUserProfile: function getUserProfile() {
@@ -48647,15 +48653,19 @@
 	    var action = payload.action;
 	    switch (action.actionType) {
 	        case _UserConstants2.default.REGISTER_USER_RESPONSE:
-	            loadSignupMsg(action.data);
+	            loadMsg(action.data);
 	            UserStore.emitChange();
 	            break;
 	        case _UserConstants2.default.LOGIN_RESPONSE:
-	            loadLoginMsg(action.data);
+	            loadMsg(action.data);
 	            UserStore.emitChange();
 	            break;
 	        case _UserConstants2.default.GET_USER_PROFILE_RESPONSE:
 	            loadUserProfile(action.data);
+	            UserStore.emitChange();
+	            break;
+	        case _UserConstants2.default.UPDATE_USER_PROFILE_RESPONSE:
+	            loadMsg(action.data);
 	            UserStore.emitChange();
 	            break;
 	        default:
@@ -54498,7 +54508,7 @@
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
-	        msg: _UserStore2.default.getRegisterMsg()
+	        msg: _UserStore2.default.getMsg()
 	    };
 	}
 	
@@ -56715,7 +56725,7 @@
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
-	        msg: _UserStore2.default.getRegisterMsg(),
+	        msg: _UserStore2.default.getMsg(),
 	        userProfile: _UserStore2.default.getUserProfile()
 	    };
 	}
@@ -56810,6 +56820,7 @@
 	                        ref: function ref(_ref2) {
 	                            return _this.street = _ref2;
 	                        },
+	                        value: this.state.userProfile.detailedInfo.street,
 	                        floatingLabelText: 'Street',
 	                        validations: {
 	                            maxLength: 50
@@ -56820,6 +56831,7 @@
 	                        ref: function ref(_ref3) {
 	                            return _this.city = _ref3;
 	                        },
+	                        value: this.state.userProfile.detailedInfo.city,
 	                        floatingLabelText: 'City',
 	                        validations: {
 	                            maxLength: 50
@@ -56830,6 +56842,7 @@
 	                        ref: function ref(_ref4) {
 	                            return _this.stateName = _ref4;
 	                        },
+	                        value: this.state.userProfile.detailedInfo.state,
 	                        floatingLabelText: 'State',
 	                        validations: {
 	                            maxLength: 50
@@ -56840,6 +56853,7 @@
 	                        ref: function ref(_ref5) {
 	                            return _this.country = _ref5;
 	                        },
+	                        value: this.state.userProfile.detailedInfo.country,
 	                        floatingLabelText: 'Country',
 	                        validations: {
 	                            maxLength: 50
@@ -56849,6 +56863,7 @@
 	                    _react2.default.createElement(_FormsyText2.default, {
 	                        name: 'profilePic',
 	                        hintText: 'http://www.example.com',
+	                        value: this.state.userProfile.detailedInfo.profile_pic_url,
 	                        floatingLabelText: 'URL',
 	                        ref: function ref(_ref6) {
 	                            return _this.profilePic = _ref6;

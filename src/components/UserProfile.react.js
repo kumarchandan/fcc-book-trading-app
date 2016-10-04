@@ -24,7 +24,7 @@ const styles = {
 function getUserStore() {
     return {
         canSubmit: false,
-        msg: UserStore.getRegisterMsg(),
+        msg: UserStore.getMsg(),
         userProfile: UserStore.getUserProfile(),
     }
 }
@@ -99,6 +99,7 @@ var UserProfile = React.createClass({
                         <br />
                         <FormsyText name='street'
                             ref={ (ref) => this.street = ref }
+                            value={this.state.userProfile.detailedInfo.street}
                             floatingLabelText="Street"
                             validations={{
                                 maxLength: 50
@@ -107,6 +108,7 @@ var UserProfile = React.createClass({
                         <br />
                         <FormsyText name='city'
                             ref={ (ref) => this.city = ref }
+                            value={this.state.userProfile.detailedInfo.city}
                             floatingLabelText="City"
                             validations={{
                                 maxLength: 50
@@ -115,6 +117,7 @@ var UserProfile = React.createClass({
                         <br />
                         <FormsyText name='state'
                             ref={ (ref) => this.stateName = ref }
+                            value={this.state.userProfile.detailedInfo.state}
                             floatingLabelText="State"
                             validations={{
                                 maxLength: 50
@@ -123,6 +126,7 @@ var UserProfile = React.createClass({
                         <br />
                         <FormsyText name='country'
                             ref={ (ref) => this.country = ref }
+                            value={this.state.userProfile.detailedInfo.country}
                             floatingLabelText="Country"
                             validations={{
                                 maxLength: 50
@@ -132,6 +136,7 @@ var UserProfile = React.createClass({
                         <FormsyText
                             name='profilePic'
                             hintText="http://www.example.com"
+                            value={this.state.userProfile.detailedInfo.profile_pic_url}
                             floatingLabelText="URL"
                             ref={ (ref) => this.profilePic = ref }
                             validations='isUrl'

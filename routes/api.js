@@ -14,5 +14,7 @@ router.get('/books/mine', query.getMyBooks)
 // POST
 router.post('/books/add', update.addBook)
 router.post('/books/remove', update.removeBook)
+//
+router.post('/user/update', update.updateUserProfile)
 
 module.exports = router

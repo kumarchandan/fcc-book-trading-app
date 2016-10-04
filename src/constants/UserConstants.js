@@ -9,5 +9,6 @@ module.exports = keyMirror({
     LOGIN_RESPONSE: null,
     GET_USER_PROFILE: null,
     GET_USER_PROFILE_RESPONSE: null,
-    UPDATE_USER_PROFILE: null
+    UPDATE_USER_PROFILE: null,
+    UPDATE_USER_PROFILE_RESPONSE: null
 })

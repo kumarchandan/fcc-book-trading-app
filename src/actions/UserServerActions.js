@@ -25,6 +25,13 @@ var UserServerActions = {
             actionType: UserConstants.GET_USER_PROFILE_RESPONSE,
             data: userProfile
         })
+    },
+    // Update User Profile
+    updateUserProfile: function(msg) {
+        AppDispatcher.handleServerAction({
+            actionType: UserConstants.UPDATE_USER_PROFILE_RESPONSE,
+            data: msg
+        })
     }
 }
 

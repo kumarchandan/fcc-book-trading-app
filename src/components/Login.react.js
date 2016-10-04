@@ -25,7 +25,7 @@ const styles = {
 function getUserStore() {
     return {
         canSubmit: false,
-        msg: UserStore.getLoginMsg()
+        msg: UserStore.getMsg()
     }
 }
 
@@ -56,7 +56,6 @@ var Login = React.createClass({
         })
     },
     submitForm: function(data) {
-        console.log(JSON.stringify(data))
         UserActions.login(data)
     },
     notifyFormError: function(data) {

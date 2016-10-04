@@ -25,7 +25,7 @@ const styles = {
 function getUserStore() {
     return {
         canSubmit: false,
-        msg: UserStore.getRegisterMsg()
+        msg: UserStore.getMsg()
     }
 }
 

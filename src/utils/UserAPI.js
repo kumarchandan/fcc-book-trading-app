@@ -54,7 +54,17 @@ var UserAPI = {
                 UserServerActions.getUserProfile(null)
             }
         })
+    },
+    //
+    updateUserProfile: function(user) {
+        request.post('/api/user/update').send({ user: user }).end(function(err, result) {
+            //
+            if(err) throw err
+            //
+            UserServerActions.updateUserProfile(result.body.msg)
+        })
     }
 }
 
+//
 module.exports = UserAPI
