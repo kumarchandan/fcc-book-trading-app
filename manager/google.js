@@ -16,7 +16,11 @@ function getBooks(req, res) {
         q: bookName
     }, function(err, books) {
         //
-        if(err) throw err
+        if(err) {
+            res.status(200).json({
+                data: null
+            })
+        }
         //
         res.status(200).json({
             data: books

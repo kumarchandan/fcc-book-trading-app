@@ -8,8 +8,10 @@ import Chip from 'material-ui/Chip'
 import ClearIcon from 'material-ui/svg-icons/content/clear'
 import Divider from 'material-ui/Divider'
 import IconButton from 'material-ui/IconButton'
+import LeftIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import MyBooks from './Books.MyBooks.react'
 import React from 'react'
+import RightIcon from 'material-ui/svg-icons/navigation/chevron-right'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import { Tab, Tabs } from 'material-ui/Tabs'
@@ -28,6 +30,8 @@ function getFromBookStore() {
 
 var Books = React.createClass({
     //
+    _paginationCounter: 0,
+    //
     getInitialState: function() {
         return getFromBookStore()
     },
@@ -36,12 +40,20 @@ var Books = React.createClass({
         this.setState(getFromBookStore())
     },
     //
-    searchBook: function() {
+    searchBook: function(paginationText) {
         // Handle Pagination
         var bookName = this.inpAddBook.getValue()
         if(bookName !== '') {
-            let sIndex = 0
-            BookActions.getBooks(bookName, sIndex)
+            if(paginationText === 'R') {
+                this._paginationCounter += 41
+                BookActions.getBooks(bookName, this._paginationCounter)
+            } else if(this._paginationCounter !== 0 && paginationText === 'L') {
+                this._paginationCounter -= 41
+                BookActions.getBooks(bookName, this._paginationCounter)
+            } else {
+                // Normal case - First time enter
+                BookActions.getBooks(bookName, 0)
+            }
         }
     },
     handleKeyDown: function(event) {
@@ -50,6 +62,9 @@ var Books = React.createClass({
         }
     },
     clearSearch: function() {
+        // Reset Pagination Counter
+        this._paginationCounter = 0
+        // Clear Search
         BookActions.clearSearch()
     },
     //
@@ -94,6 +109,14 @@ var Books = React.createClass({
                         <TextField label='My Books' hintText='Search your book..' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} />
                         <IconButton onTouchTap={this.clearSearch}>
                             <ClearIcon />
+                        </IconButton>
+                    </ToolbarGroup>
+                    <ToolbarGroup>
+                        <IconButton onTouchTap={ () => this.searchBook('L') } disabled={this._paginationCounter === 0 ? true: false }>
+                            <LeftIcon />
+                        </IconButton>
+                        <IconButton onTouchTap={ () => this.searchBook('R') }>
+                            <RightIcon />
                         </IconButton>
                     </ToolbarGroup>
                 </Toolbar>
