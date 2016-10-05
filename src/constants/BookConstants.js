@@ -13,5 +13,9 @@ module.exports = keyMirror({
     GET_ALL_BOOKS_RESPONSE: null,
     GET_MY_BOOKS: null,
     GET_MY_BOOKS_RESPONSE: null,
-    CLEAR_SEARCH: null
+    CLEAR_SEARCH: null,
+    REQUEST_BOOK: null,
+    REQUEST_BOOK_RESPONSE: null,
+    GET_BOOK_TRADES: null,
+    GET_BOOK_TRADES_RESPONSE: null
 })

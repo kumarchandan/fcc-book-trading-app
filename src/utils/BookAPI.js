@@ -52,6 +52,26 @@ var BookAPI = {
             //
             BookServerActions.removeBook(result.body.data)
         })
+    },
+    // Request Book
+    requestBook: function(tData) {
+        //
+        request.post('/api/books/request').send( { tData: tData }).end(function(err, result) {
+            //
+            if(err) throw err
+            //
+            BookServerActions.requestBook(result.body.data)
+        })
+    },
+    // Get Book Trades
+    getBookTrades: function(email) {
+        //
+        request.get('/api/books/trade').end(function(err, result) {
+            //
+            if(err) throw err
+            //
+            BookServerActions.getBookTrades(result.body.data)
+        })
     }
 }
 

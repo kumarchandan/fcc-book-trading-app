@@ -57,8 +57,6 @@ var UserProfile = React.createClass({
     },
     submitForm: function(data) {
         //
-        console.log(JSON.stringify(data))
-        //
         UserActions.updateUserProfile(data)
     },
     notifyFormError: function(data) {
@@ -86,6 +84,7 @@ var UserProfile = React.createClass({
                         <br />
                         <FormsyText name='displayName'
                             ref={ (ref) => this.displayName = ref }
+                            value={this.state.userProfile.detailedInfo.displayName}
                             floatingLabelText="Display Name"
                             validations={{
                                 isWords: true,

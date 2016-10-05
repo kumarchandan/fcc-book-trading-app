@@ -50,6 +50,29 @@ var BookActions = {
         AppDispatcher.handleAction({
             actionType: BookConstants.CLEAR_SEARCH
         })
+    },
+    // Request Book
+    requestBook: function(_id, bookId, owner, renter) {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.REQUEST_BOOK
+        })
+        // Transactional Data
+        var tData = {
+            _id: _id,
+            bookId: bookId,
+            owner: owner,
+            renter: renter
+        }
+        //
+        BookAPI.requestBook(tData)
+    },
+    // Get Book Trades
+    getBookTrades: function(email) {
+        AppDispatcher.handleAction({
+            actionType: BookConstants.GET_BOOK_TRADES
+        })
+        //
+        BookAPI.getBookTrades(email)
     }
 }
 

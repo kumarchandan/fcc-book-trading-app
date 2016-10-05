@@ -3,8 +3,8 @@
 import _ from 'underscore'
 import AppDispatcher from '../dispatcher/AppDispatcher'
 import UserConstants from '../constants/UserConstants'
-
 var EventEmitter = require('events').EventEmitter
+
 //
 var _msg = {
     text: '',
@@ -14,10 +14,11 @@ var _msg = {
 // User Profile
 var _userProfile = null
 
-//
+// Messages
 function loadMsg(msg) {
     _msg = msg
 }
+// User Profile
 function loadUserProfile(userProfile) {
     _userProfile = userProfile
 }

@@ -1,7 +1,10 @@
 // manager/update.js
 
 var BookModel = require('../models/book')
+var mongoose = require('mongoose')
 var UserModel = require('../models/user')
+
+mongoose.Promise = require('bluebird')
 
 // Add Book
 function addBook(req, res) {
@@ -20,7 +23,10 @@ function addBook(req, res) {
             res.status(200).json({
                 data: {
                     book: doc,
-                    msg: newBook.title + ' added.'
+                    msg: {
+                        text: newBook.title + ' added.',
+                        severity: 'S'
+                    }
                 }
             })
         }
@@ -39,16 +45,20 @@ function removeBook(req, res) {
             if(!err) {
                 res.status(200).json({
                     data: {
-                        msg: 'Removed successfully!',
-                        severity: 'S',
+                        msg: {
+                            text: 'Removed successfully!',
+                            severity: 'S',
+                        },
                         _id: _id
                     }
                 })
             } else {
                 res.status(200).json({
                     data: {
-                        msg: 'Cannot remove! Error found!',
-                        severity: 'E'
+                        msg: {
+                            text: 'Cannot remove! Error found!',
+                            severity: 'E'
+                        }
                     }
                 })
             }
@@ -56,14 +66,91 @@ function removeBook(req, res) {
     } else {
         res.status(200).json({
             data: {
-                msg: 'Cannot remove! This is not your book',
-                severity: 'W'
+                msg: {
+                    text: 'Cannot remove! This is not your book',
+                    severity: 'W'
+                }
             }
         })
     }
 }
 
-// Update
+// Request Book
+function requestBook(req, res, next) {
+    //
+    var tData = req.body.tData  // _id, bookId, owner, renter
+
+    // Check if renter already requested
+    UserModel.findOne({
+        email: tData.renter,
+        'outgoingRequests.receiver': tData.owner
+    })
+    .then(function(doc) {
+        if(doc) {
+            // Already requested
+            res.status(200).json({
+                data: {
+                    msg: {
+                        text: 'You have already requested!',
+                        severity: 'W'
+                    }
+                }
+            })
+        } else {
+            // Update owners Incoming
+            UserModel.update({ email: tData.owner }, {
+                $push: {
+                    incomingRequests: {
+                        sender: tData.renter,
+                        bookObjId: tData._id,
+                        bookId: tData.bookId
+                    }
+                }
+            })
+            .then(function(doc) {
+                if(doc) {
+                    // Update renters Outgoing
+                    UserModel.update({ email: tData.renter }, {
+                        $push: {
+                            outgoingRequests: {
+                                receiver: tData.owner,
+                                bookObjId: tData._id,
+                                bookId: tData.bookId
+                            }
+                        }
+                    })
+                    .then(function(doc) {
+                        if(doc) {
+                            // Return message
+                            res.status(200).json({
+                                data: {
+                                    msg: {
+                                        text: 'Requested successfully!',
+                                        severity: 'S'
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    })
+    .catch(function(err) {
+        res.status(200).json({
+            data: {
+                msg: {
+                    text: 'Oops..Request failed!',
+                    severity: 'E'
+                },
+                err: err
+            }
+        })
+    })
+
+}
+
+// Update User Profile
 function updateUserProfile(req, res, next) {
     //
     var user = req.body.user
@@ -102,5 +189,6 @@ function updateUserProfile(req, res, next) {
 module.exports = {
     addBook: addBook,
     removeBook: removeBook,
+    requestBook: requestBook,
     updateUserProfile: updateUserProfile
 }

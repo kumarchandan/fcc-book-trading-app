@@ -24,8 +24,36 @@ const styles = {
 
 var AllBooks = React.createClass({
     //
-    handleRequestBook: function() {
-        alert('clicked')
+    handleRequestBook: function(_id, bookId, owner, holder, active) {
+        // Validate
+        var res = this.validate(owner, holder, active)
+        if(res.isValid) { // If Available
+            //
+            BookActions.requestBook(_id, bookId, owner, this.props.userProfile.email)   // _id, bookId, owner, renter
+        } else {
+            alert(res.text)
+        }
+    },
+    // Validate
+    validate: function(owner, holder, active) {
+        var message = {
+            text: 'Available',
+            isValid: true
+        }
+        // check if book belongs to this user
+        if(this.props.userProfile.email === owner) {
+            message.text = 'Why would you want to rent your own book! :D',
+            message.isValid = false
+            return message
+        } else if(holder) {
+            message.text = 'Sorry! This book is already rented! Contact Owner for details!',
+            message.isValid = false
+        } else if(!active) {
+            message.text = 'Sorry! Not Available, Contact Owner for details!',
+            message.isValid = false
+        } else {
+            return message
+        }
     },
     //
     render: function() {
@@ -43,7 +71,7 @@ var AllBooks = React.createClass({
                             title={book.title}
                             actionIcon={
                                 <IconButton
-                                    onTouchTap={() => (this.handleRequestBook())}
+                                    onTouchTap={() => (this.handleRequestBook(book._id, book.bookId, book.owner, book.holder, book.active))}
                                     tooltip={book.title}
                                     tooltipPosition='top-left'>
                                 <FavoriteBorder color='white' /></IconButton>

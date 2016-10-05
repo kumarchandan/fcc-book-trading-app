@@ -3,7 +3,8 @@
 var BookModel = require('../models/book')
 var UserModel = require('../models/user')
 
-function getAllBooks(req, res) {
+// All Books
+function getAllBooks(req, res, next) {
     //
     BookModel.find(function(err, books) {
         //
@@ -17,8 +18,8 @@ function getAllBooks(req, res) {
     })
 }
 
-// Logged in user's books
-function getMyBooks(req, res) {
+// Logged in Users books
+function getMyBooks(req, res, next) {
     //
     var owner = req.user ? req.user.email : null
     if(owner) {
@@ -34,7 +35,26 @@ function getMyBooks(req, res) {
     }
 }
 
+// Logged in Users bookTrades
+function getBookTrades(req, res, next) {
+    //
+    var user = req.user ? req.user.email : null
+    if(user) {
+        UserModel.find({ email: user }, function(err, trades) {
+            //
+            if(err) throw err
+            //
+            res.status(200).json({
+                data: {
+                    trades: trades
+                }
+            })
+        })
+    }
+}
+
 module.exports = {
     getAllBooks: getAllBooks,
-    getMyBooks: getMyBooks
+    getMyBooks: getMyBooks,
+    getBookTrades: getBookTrades
 }

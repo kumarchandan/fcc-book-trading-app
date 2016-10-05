@@ -6,15 +6,25 @@ import AppDispatcher from '../dispatcher/AppDispatcher'
 import BookConstants from '../constants/BookConstants'
 
 //
-var _books = []
 var _allBooks = []
-var _bookMsg = ''
+var _books = []
+//
+var _bookMsg = {
+    text: '',
+    severity: ''
+}
 var _myBooks = []
+var _bookTrades = []
 
 //
 function loadBooks(data) {
     _books = data.items
 }
+// Messages
+function loadMessage(data) {
+    _bookMsg = data.msg
+}
+
 // Add Book
 function addBook(data) {
     // 
@@ -54,6 +64,10 @@ function loadAllBooks(data) {
 function loadMyBooks(data) {
     _myBooks = data.items
 }
+// Book Trades
+function loadBookTrades(bookTrades) {
+    _bookTrades = bookTrades.trades
+}
 
 var BookStore = _.extend({}, EventEmitter.prototype, {
     //
@@ -62,8 +76,9 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
     },
     //
     getBookMsg: function() {
-        var temp = _bookMsg
-        _bookMsg = ''
+        var temp = Object.assign({}, _bookMsg)     // Clone entire object
+        _bookMsg.text = ''
+        _bookMsg.severity = ''
         return temp
     },
     //
@@ -74,6 +89,10 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
     getMyBooks: function() {
         //
         return _myBooks
+    },
+    //
+    getBookTrades: function() {
+        return _bookTrades
     },
     //
     emitChange: function() {
@@ -118,6 +137,14 @@ AppDispatcher.register(function(payload) {
             break
         case BookConstants.CLEAR_SEARCH:
             clearSearch()
+            BookStore.emitChange()
+            break
+        case BookConstants.REQUEST_BOOK_RESPONSE:
+            loadMessage(action.data)
+            BookStore.emitChange()
+            break
+        case  BookConstants.GET_BOOK_TRADES_RESPONSE:
+            loadBookTrades(action.data)
             BookStore.emitChange()
             break
         default:

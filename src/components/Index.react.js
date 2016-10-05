@@ -93,7 +93,7 @@ var NavigationBar = React.createClass({
                             this.state.userProfile ?
                             <Menu>
                                 <MenuItem>
-                                    <Avatar>{this.state.userProfile.username.split('')[0].toUpperCase()}</Avatar> {this.state.userProfile.username}
+                                    <Avatar>{this.state.userProfile.username.split('')[0].toUpperCase()}</Avatar> {this.state.userProfile.detailedInfo.displayName ? this.state.userProfile.detailedInfo.displayName : this.state.userProfile.username}
                                 </MenuItem>
                                 <MenuItem onTouchTap={this._handleDrawerToggle}><Link to='/profile'>Profile</Link></MenuItem>
                                 <MenuItem onTouchTap={this._handleDrawerToggle}>App Settings</MenuItem>
@@ -104,7 +104,7 @@ var NavigationBar = React.createClass({
                 </div>
                 </MuiThemeProvider>
                 <MuiThemeProvider>
-                    {this.props.children}
+                    {React.cloneElement(this.props.children, { userProfile: this.state.userProfile })}
                 </MuiThemeProvider>
             </div>
         )

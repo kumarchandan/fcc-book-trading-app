@@ -38,6 +38,20 @@ var BookServerActions = {
             actionType: BookConstants.GET_MY_BOOKS_RESPONSE,
             data: data
         })
+    },
+    // Get Book Trades
+    getBookTrades: function(data) {
+        AppDispatcher.handleServerAction({
+            actionType: BookConstants.GET_BOOK_TRADES_RESPONSE,
+            data: data
+        })
+    },
+    // Request Book
+    requestBook: function(data) {
+        AppDispatcher.handleServerAction({
+            actionType: BookConstants.REQUEST_BOOK_RESPONSE,
+            data: data
+        })
     }
 }
 

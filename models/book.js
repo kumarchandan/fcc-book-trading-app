@@ -7,11 +7,14 @@ var bookSchema = new Schema({
     bookId: String,
     title: String,
     cover: String,
-    owner: String,
-    active: Boolean,    // books is availabe for rent or not
+    owner: String,      // email
+    active: {
+        type: Boolean,
+        default: true
+    },
     holder: {
         type: String,
-        default: ''
+        default: null
     }
 })
 

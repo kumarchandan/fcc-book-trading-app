@@ -10,10 +10,12 @@ var update = require('../manager/update')
 router.get('/books/search', google.getBooks)
 router.get('/books/all', query.getAllBooks)
 router.get('/books/mine', query.getMyBooks)
+router.get('/books/trade', query.getBookTrades)
 
 // POST
 router.post('/books/add', update.addBook)
 router.post('/books/remove', update.removeBook)
+router.post('/books/request', update.requestBook)
 //
 router.post('/user/update', update.updateUserProfile)
 
