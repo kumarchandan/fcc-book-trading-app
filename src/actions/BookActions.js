@@ -52,7 +52,7 @@ var BookActions = {
         })
     },
     // Request Book
-    requestBook: function(_id, bookId, owner, renter) {
+    requestBook: function(_id, bookId, title, cover, owner, renter) {
         AppDispatcher.handleAction({
             actionType: BookConstants.REQUEST_BOOK
         })
@@ -60,6 +60,8 @@ var BookActions = {
         var tData = {
             _id: _id,
             bookId: bookId,
+            title: title,
+            cover: cover,
             owner: owner,
             renter: renter
         }

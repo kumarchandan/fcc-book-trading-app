@@ -12,6 +12,8 @@ var UserSchema = new Schema({
             sender: String,         // email
             bookObjId: String,
             bookId: String,
+            bookTitle: String,
+            bookCover: String,
             status: {
                 type: String,
                 default: 'New'      // New, Finished
@@ -31,6 +33,8 @@ var UserSchema = new Schema({
             receiver: String,       // email
             bookObjId: String,
             bookId: String,
+            bookTitle: String,
+            bookCover: String,
             status: {
                 type: String,
                 default: 'New'      // New, Finished

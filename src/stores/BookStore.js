@@ -14,7 +14,7 @@ var _bookMsg = {
     severity: ''
 }
 var _myBooks = []
-var _bookTrades = []
+var _bookTrades = {}
 
 //
 function loadBooks(data) {

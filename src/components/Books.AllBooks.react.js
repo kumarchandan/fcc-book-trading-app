@@ -24,12 +24,12 @@ const styles = {
 
 var AllBooks = React.createClass({
     //
-    handleRequestBook: function(_id, bookId, owner, holder, active) {
+    handleRequestBook: function(_id, bookId, title, cover, owner, holder, active) {
         // Validate
         var res = this.validate(owner, holder, active)
         if(res.isValid) { // If Available
             //
-            BookActions.requestBook(_id, bookId, owner, this.props.userProfile.email)   // _id, bookId, owner, renter
+            BookActions.requestBook(_id, bookId, title, cover, owner, this.props.userProfile.email)   // _id, bookId, title, cover, owner, renter
         } else {
             alert(res.text)
         }
@@ -71,7 +71,7 @@ var AllBooks = React.createClass({
                             title={book.title}
                             actionIcon={
                                 <IconButton
-                                    onTouchTap={() => (this.handleRequestBook(book._id, book.bookId, book.owner, book.holder, book.active))}
+                                    onTouchTap={() => (this.handleRequestBook(book._id, book.bookId, book.title, book.cover, book.owner, book.holder, book.active))}
                                     tooltip={book.title}
                                     tooltipPosition='top-left'>
                                 <FavoriteBorder color='white' /></IconButton>

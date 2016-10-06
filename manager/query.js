@@ -40,7 +40,7 @@ function getBookTrades(req, res, next) {
     //
     var user = req.user ? req.user.email : null
     if(user) {
-        UserModel.find({ email: user }, function(err, trades) {
+        UserModel.findOne({ email: user }, function(err, trades) {
             //
             if(err) throw err
             //

@@ -78,12 +78,13 @@ function removeBook(req, res) {
 // Request Book
 function requestBook(req, res, next) {
     //
-    var tData = req.body.tData  // _id, bookId, owner, renter
+    var tData = req.body.tData  // _id, bookId, title, cover, owner, renter
 
-    // Check if renter already requested
+    // Check if renter already requested the book
     UserModel.findOne({
         email: tData.renter,
-        'outgoingRequests.receiver': tData.owner
+        'outgoingRequests.receiver': tData.owner,
+        'outgoingRequests.bookObjId': tData._id
     })
     .then(function(doc) {
         if(doc) {
@@ -103,7 +104,9 @@ function requestBook(req, res, next) {
                     incomingRequests: {
                         sender: tData.renter,
                         bookObjId: tData._id,
-                        bookId: tData.bookId
+                        bookId: tData.bookId,
+                        bookTitle: tData.title,
+                        bookCover: tData.cover
                     }
                 }
             })
@@ -115,7 +118,9 @@ function requestBook(req, res, next) {
                             outgoingRequests: {
                                 receiver: tData.owner,
                                 bookObjId: tData._id,
-                                bookId: tData.bookId
+                                bookId: tData.bookId,
+                                bookTitle: tData.title,
+                                bookCover: tData.cover
                             }
                         }
                     })
