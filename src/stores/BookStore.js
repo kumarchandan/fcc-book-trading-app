@@ -4,6 +4,7 @@ var _ = require('underscore')
 var EventEmitter = require('events').EventEmitter
 import AppDispatcher from '../dispatcher/AppDispatcher'
 import BookConstants from '../constants/BookConstants'
+import TradeConstants from '../constants/TradeConstants'
 
 //
 var _allBooks = []
@@ -14,7 +15,6 @@ var _bookMsg = {
     severity: ''
 }
 var _myBooks = []
-var _bookTrades = {}
 
 //
 function loadBooks(data) {
@@ -64,10 +64,6 @@ function loadAllBooks(data) {
 function loadMyBooks(data) {
     _myBooks = data.items
 }
-// Book Trades
-function loadBookTrades(bookTrades) {
-    _bookTrades = bookTrades.trades
-}
 
 var BookStore = _.extend({}, EventEmitter.prototype, {
     //
@@ -89,10 +85,6 @@ var BookStore = _.extend({}, EventEmitter.prototype, {
     getMyBooks: function() {
         //
         return _myBooks
-    },
-    //
-    getBookTrades: function() {
-        return _bookTrades
     },
     //
     emitChange: function() {
@@ -143,8 +135,8 @@ AppDispatcher.register(function(payload) {
             loadMessage(action.data)
             BookStore.emitChange()
             break
-        case  BookConstants.GET_BOOK_TRADES_RESPONSE:
-            loadBookTrades(action.data)
+        case TradeConstants.SAVE_TRADE_ACTION_RESPONSE:
+            loadMessage(action.data)
             BookStore.emitChange()
             break
         default:

@@ -7,7 +7,7 @@ var UserModel = require('../models/user')
 mongoose.Promise = require('bluebird')
 
 // Add Book
-function addBook(req, res) {
+function addBook(req, res, next) {
     // User can have many books of same title, let it all save
     var newBook = new BookModel()
     newBook.bookId = req.body.id
@@ -34,14 +34,14 @@ function addBook(req, res) {
 }
 
 // Remove Book
-function removeBook(req, res) {
+function removeBook(req, res, next) {
     // Remove using current user's id
 
     var email = req.user ? req.user.email : null
     var _id = req.body._id
     if(email) {
         BookModel.remove({ _id: _id, owner: email }, function(err, doc) {
-            if(err) throw err
+            //
             if(!err) {
                 res.status(200).json({
                     data: {
@@ -171,29 +171,70 @@ function updateUserProfile(req, res, next) {
         }
     }, function(err, doc) {
         //
-        if(err) throw err
-        //
-        if(doc) {
+        if(err) {
             res.status(200).json({
-                msg: {
-                    text: 'Profile updated successfully!',
-                    severity: 'S'
+                data: {
+                    msg: {
+                        text: 'Profile update failed!',
+                        severity: 'E'
+                    }
                 }
             })
-        } else {
+        }
+        //
+        if(!err) {
             res.status(200).json({
-                msg: {
-                    text: 'Profile update failed!',
-                    severity: 'E'
+                data: {
+                    msg: {
+                        text: 'Profile updated successfully!',
+                        severity: 'S'
+                    }
                 }
             })
         }
     })
 }
 
+// Save Trade Action
+function saveTradeAction(req, res, next) {
+    //
+    var tradeAction = req.body.tradeAction      // _id and action
+    var email = req.user ? req.user.email : null
+
+    // Get
+    UserModel.update({ email: email, 'incomingRequests._id': tradeAction._id }, {
+        $set: {
+            'incomingRequests.$.action': tradeAction.action
+        }
+    }, function(err, doc) {
+        //
+        if(!err) {
+            res.status(200).json({
+                data: {
+                    msg: {
+                        text: 'Action updated successfully!',
+                        severity: 'S'
+                    }
+                }
+            })
+        } else {
+            res.status(200).json({
+                data: {
+                    msg: {
+                        text: 'Oops..Action update Failed!',
+                        severity: 'E'
+                    }
+                }
+            })
+        }
+    })
+}
+
+//
 module.exports = {
     addBook: addBook,
     removeBook: removeBook,
     requestBook: requestBook,
-    updateUserProfile: updateUserProfile
+    updateUserProfile: updateUserProfile,
+    saveTradeAction: saveTradeAction
 }

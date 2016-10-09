@@ -15,8 +15,8 @@ var _msg = {
 var _userProfile = null
 
 // Messages
-function loadMsg(msg) {
-    _msg = msg
+function loadMsg(data) {
+    _msg = data.msg
 }
 // User Profile
 function loadUserProfile(userProfile) {

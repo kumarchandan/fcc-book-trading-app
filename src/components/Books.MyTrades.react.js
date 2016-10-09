@@ -4,18 +4,29 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import React from 'react'
+import TradeActions from '../actions/TradeActions'
 import { Table, TableHeader, TableBody, TableRow, TableHeaderColumn, TableRowColumn } from 'material-ui/Table'
 
 var MyTrades = React.createClass({
-    //
-    getInitialState: function() {
-        return {
-            value: 1 // Pending
-        }
-    },
     // Handle DropDownMenu Change
-    _handleChange: function(event, index, value) {
-        this.setState({ value })
+    _handleChange: function(_id, event, index, value) {
+        //
+        let tradeAction = {
+            _id: _id,
+            value: value
+        }
+        //
+        TradeActions.updateTradeAction(tradeAction)
+    },
+    // Save
+    _saveTradeAction: function(_id, action) {
+        //
+        let tradeAction = {
+            _id: _id,
+            action: action
+        }
+        //
+        TradeActions.saveTradeAction(tradeAction)
     },
     //
     render: function() {
@@ -27,23 +38,23 @@ var MyTrades = React.createClass({
         }
         //
         var rows = []
-        bookTrades.incomingRequests.map( (booktrade, i) => rows.push(
+        this.props.bookTrades.incomingRequests.map( (booktrade, i) => rows.push(
             <TableRow key={booktrade._id}>
                 <TableRowColumn>{booktrade.sender}</TableRowColumn>
                 <TableRowColumn>{booktrade.bookTitle}</TableRowColumn>
                 <TableRowColumn>{booktrade.status}</TableRowColumn>
                 <TableRowColumn>
-                    <DropDownMenu value={this.state.value} onChange={this._handleChange}>
-                        <MenuItem value={1} primaryText='Pending' />
-                        <MenuItem value={2} primaryText='Accept' />
-                        <MenuItem value={3} primaryText='Reject' />
+                    <DropDownMenu value={booktrade.action} onChange={ (event, key, value) => (this._handleChange(booktrade._id, event, key, value)) }>
+                        <MenuItem value={'Pending'} primaryText='Pending' />
+                        <MenuItem value={'Accept'} primaryText='Accept' />
+                        <MenuItem value={'Reject'} primaryText='Reject' />
                     </DropDownMenu>
                 </TableRowColumn>
                 <TableRowColumn>
-                    <FlatButton label='SAVE' primary={true} />
+                    <FlatButton label='SAVE' primary={true} onTouchTap={ () => (this._saveTradeAction(booktrade._id, booktrade.action)) } />
                 </TableRowColumn>
             </TableRow>
-        ))
+        ), this)
         //
         return (
             <Table>

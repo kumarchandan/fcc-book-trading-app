@@ -62,16 +62,6 @@ var BookAPI = {
             //
             BookServerActions.requestBook(result.body.data)
         })
-    },
-    // Get Book Trades
-    getBookTrades: function(email) {
-        //
-        request.get('/api/books/trade').end(function(err, result) {
-            //
-            if(err) throw err
-            //
-            BookServerActions.getBookTrades(result.body.data)
-        })
     }
 }
 

@@ -200,6 +200,14 @@
 	
 	var _TextField2 = _interopRequireDefault(_TextField);
 	
+	var _TradeActions = __webpack_require__(/*! ../actions/TradeActions */ 573);
+	
+	var _TradeActions2 = _interopRequireDefault(_TradeActions);
+	
+	var _TradeStore = __webpack_require__(/*! ../stores/TradeStore */ 571);
+	
+	var _TradeStore2 = _interopRequireDefault(_TradeStore);
+	
 	var _Tabs = __webpack_require__(/*! material-ui/Tabs */ 280);
 	
 	var _Toolbar = __webpack_require__(/*! material-ui/Toolbar */ 285);
@@ -226,7 +234,7 @@
 	    return {
 	        allBooks: _BookStore2.default.getAllBooks(),
 	        booksList: _BookStore2.default.getBooks(),
-	        bookTrades: _BookStore2.default.getBookTrades(),
+	        bookTrades: _TradeStore2.default.getBookTrades(),
 	        msg: _BookStore2.default.getBookMsg(),
 	        mybooks: _BookStore2.default.getMyBooks()
 	    };
@@ -281,14 +289,16 @@
 	        // Load Initial data
 	        _BookActions2.default.getAllBooks();
 	        _BookActions2.default.getMyBooks();
-	        _BookActions2.default.getBookTrades();
+	        _TradeActions2.default.getBookTrades();
 	        //
 	        this.inpAddBook.focus();
 	        _BookStore2.default.addChangeListener(this._onChange);
+	        _TradeStore2.default.addChangeListener(this._onChange);
 	    },
 	    //
 	    componentWillUnmount: function componentWillUnmount() {
 	        _BookStore2.default.removeChangeListener(this._onChange);
+	        _TradeStore2.default.removeChangeListener(this._onChange);
 	    },
 	    //
 	    render: function render() {
@@ -588,14 +598,6 @@
 	        };
 	        //
 	        _BookAPI2.default.requestBook(tData);
-	    },
-	    // Get Book Trades
-	    getBookTrades: function getBookTrades(email) {
-	        _AppDispatcher2.default.handleAction({
-	            actionType: _BookConstants2.default.GET_BOOK_TRADES
-	        });
-	        //
-	        _BookAPI2.default.getBookTrades(email);
 	    }
 	}; // actions/BookActions.js
 	
@@ -1221,16 +1223,6 @@
 	            //
 	            _BookServerActions2.default.requestBook(result.body.data);
 	        });
-	    },
-	    // Get Book Trades
-	    getBookTrades: function getBookTrades(email) {
-	        //
-	        request.get('/api/books/trade').end(function (err, result) {
-	            //
-	            if (err) throw err;
-	            //
-	            _BookServerActions2.default.getBookTrades(result.body.data);
-	        });
 	    }
 	};
 	
@@ -1290,13 +1282,6 @@
 	    getMyBooks: function getMyBooks(data) {
 	        _AppDispatcher2.default.handleServerAction({
 	            actionType: _BookConstants2.default.GET_MY_BOOKS_RESPONSE,
-	            data: data
-	        });
-	    },
-	    // Get Book Trades
-	    getBookTrades: function getBookTrades(data) {
-	        _AppDispatcher2.default.handleServerAction({
-	            actionType: _BookConstants2.default.GET_BOOK_TRADES_RESPONSE,
 	            data: data
 	        });
 	    },
@@ -29075,6 +29060,10 @@
 	
 	var _BookConstants2 = _interopRequireDefault(_BookConstants);
 	
+	var _TradeConstants = __webpack_require__(/*! ../constants/TradeConstants */ 572);
+	
+	var _TradeConstants2 = _interopRequireDefault(_TradeConstants);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// stores/BookStore.js
@@ -29092,7 +29081,6 @@
 	    severity: ''
 	};
 	var _myBooks = [];
-	var _bookTrades = {};
 	
 	//
 	function loadBooks(data) {
@@ -29142,10 +29130,6 @@
 	function loadMyBooks(data) {
 	    _myBooks = data.items;
 	}
-	// Book Trades
-	function loadBookTrades(bookTrades) {
-	    _bookTrades = bookTrades.trades;
-	}
 	
 	var BookStore = _.extend({}, EventEmitter.prototype, {
 	    //
@@ -29167,10 +29151,6 @@
 	    getMyBooks: function getMyBooks() {
 	        //
 	        return _myBooks;
-	    },
-	    //
-	    getBookTrades: function getBookTrades() {
-	        return _bookTrades;
 	    },
 	    //
 	    emitChange: function emitChange() {
@@ -29222,8 +29202,8 @@
 	            loadMessage(action.data);
 	            BookStore.emitChange();
 	            break;
-	        case _BookConstants2.default.GET_BOOK_TRADES_RESPONSE:
-	            loadBookTrades(action.data);
+	        case _TradeConstants2.default.SAVE_TRADE_ACTION_RESPONSE:
+	            loadMessage(action.data);
 	            BookStore.emitChange();
 	            break;
 	        default:
@@ -32045,22 +32025,38 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _TradeActions = __webpack_require__(/*! ../actions/TradeActions */ 573);
+	
+	var _TradeActions2 = _interopRequireDefault(_TradeActions);
+	
 	var _Table = __webpack_require__(/*! material-ui/Table */ 248);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	// components/Books.MyTrades.react.js
+	
 	var MyTrades = _react2.default.createClass({
 	    displayName: 'MyTrades',
 	
-	    //
-	    getInitialState: function getInitialState() {
-	        return {
-	            value: 1 // Pending
-	        };
-	    },
 	    // Handle DropDownMenu Change
-	    _handleChange: function _handleChange(event, index, value) {
-	        this.setState({ value: value });
+	    _handleChange: function _handleChange(_id, event, index, value) {
+	        //
+	        var tradeAction = {
+	            _id: _id,
+	            value: value
+	        };
+	        //
+	        _TradeActions2.default.updateTradeAction(tradeAction);
+	    },
+	    // Save
+	    _saveTradeAction: function _saveTradeAction(_id, action) {
+	        //
+	        var tradeAction = {
+	            _id: _id,
+	            action: action
+	        };
+	        //
+	        _TradeActions2.default.saveTradeAction(tradeAction);
 	    },
 	    //
 	    render: function render() {
@@ -32074,7 +32070,7 @@
 	        }
 	        //
 	        var rows = [];
-	        bookTrades.incomingRequests.map(function (booktrade, i) {
+	        this.props.bookTrades.incomingRequests.map(function (booktrade, i) {
 	            return rows.push(_react2.default.createElement(
 	                _Table.TableRow,
 	                { key: booktrade._id },
@@ -32098,19 +32094,23 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        _DropDownMenu2.default,
-	                        { value: _this.state.value, onChange: _this._handleChange },
-	                        _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Pending' }),
-	                        _react2.default.createElement(_MenuItem2.default, { value: 2, primaryText: 'Accept' }),
-	                        _react2.default.createElement(_MenuItem2.default, { value: 3, primaryText: 'Reject' })
+	                        { value: booktrade.action, onChange: function onChange(event, key, value) {
+	                                return _this._handleChange(booktrade._id, event, key, value);
+	                            } },
+	                        _react2.default.createElement(_MenuItem2.default, { value: 'Pending', primaryText: 'Pending' }),
+	                        _react2.default.createElement(_MenuItem2.default, { value: 'Accept', primaryText: 'Accept' }),
+	                        _react2.default.createElement(_MenuItem2.default, { value: 'Reject', primaryText: 'Reject' })
 	                    )
 	                ),
 	                _react2.default.createElement(
 	                    _Table.TableRowColumn,
 	                    null,
-	                    _react2.default.createElement(_FlatButton2.default, { label: 'SAVE', primary: true })
+	                    _react2.default.createElement(_FlatButton2.default, { label: 'SAVE', primary: true, onTouchTap: function onTouchTap() {
+	                            return _this._saveTradeAction(booktrade._id, booktrade.action);
+	                        } })
 	                )
 	            ));
-	        });
+	        }, this);
 	        //
 	        return _react2.default.createElement(
 	            _Table.Table,
@@ -32158,8 +32158,6 @@
 	});
 	
 	//
-	// components/Books.MyTrades.react.js
-	
 	module.exports = MyTrades;
 
 /***/ },
@@ -39110,10 +39108,7 @@
 	            //
 	            if (err) throw err;
 	            //
-	            if (result.body.msg) {
-	                // Msg for Snackbar
-	                _UserServerActions2.default.registerUser(result.body.msg);
-	            }
+	            _UserServerActions2.default.registerUser(result.body.data);
 	        });
 	    },
 	    // Login
@@ -39123,9 +39118,7 @@
 	            //
 	            if (err) throw err;
 	            //
-	            if (result.body.msg) {
-	                _UserServerActions2.default.login(result.body.msg);
-	            }
+	            _UserServerActions2.default.login(result.body.data);
 	        });
 	    },
 	    //
@@ -39160,7 +39153,7 @@
 	            //
 	            if (err) throw err;
 	            //
-	            _UserServerActions2.default.updateUserProfile(result.body.msg);
+	            _UserServerActions2.default.updateUserProfile(result.body.data);
 	        });
 	    }
 	};
@@ -39242,9 +39235,17 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	//
+	// Styles
 	// components/Home.react.js
 	
+	var styles = {
+	    div: {
+	        // background: 'url('+'http://cdn.mhpbooks.com/uploads/2015/06/books.jpg'+')',
+	        // backgroundSize: 'cover'
+	    }
+	};
+	
+	//
 	var Home = _react2.default.createClass({
 	    displayName: 'Home',
 	
@@ -39267,7 +39268,7 @@
 	        //
 	        return _react2.default.createElement(
 	            'div',
-	            null,
+	            { style: styles.div },
 	            _react2.default.createElement(
 	                'p',
 	                null,
@@ -57997,8 +57998,8 @@
 	var _userProfile = null;
 	
 	// Messages
-	function loadMsg(msg) {
-	    _msg = msg;
+	function loadMsg(data) {
+	    _msg = data.msg;
 	}
 	// User Profile
 	function loadUserProfile(userProfile) {
@@ -60921,6 +60922,252 @@
 	  muiTheme: _react.PropTypes.object.isRequired
 	};
 	exports.default = PopoverAnimationVertical;
+
+/***/ },
+/* 571 */
+/*!**********************************!*\
+  !*** ./src/stores/TradeStore.js ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _AppDispatcher = __webpack_require__(/*! ../dispatcher/AppDispatcher */ 4);
+	
+	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
+	
+	var _TradeConstants = __webpack_require__(/*! ../constants/TradeConstants */ 572);
+	
+	var _TradeConstants2 = _interopRequireDefault(_TradeConstants);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// stores/TradeStore.js
+	
+	var _ = __webpack_require__(/*! underscore */ 236);
+	var EventEmitter = __webpack_require__(/*! events */ 237).EventEmitter;
+	
+	
+	//
+	var _bookTrades = {};
+	
+	// Book Trades
+	function loadBookTrades(bookTrades) {
+	    _bookTrades = bookTrades.trades;
+	}
+	//
+	function updateTradeAction(tradeAction) {
+	    // Update array inplace 
+	    _bookTrades.incomingRequests.forEach(function (value, index, arr) {
+	        if (value._id === tradeAction._id) {
+	            arr[index].action = tradeAction.value; // value = Accepted, Pending or Rejected
+	        }
+	    });
+	}
+	
+	var TradeStore = _.extend({}, EventEmitter.prototype, {
+	    //
+	    getBookTrades: function getBookTrades() {
+	        return _bookTrades;
+	    },
+	    //
+	    emitChange: function emitChange() {
+	        this.emit('change');
+	    },
+	    //
+	    addChangeListener: function addChangeListener(done) {
+	        this.on('change', done);
+	    },
+	    //
+	    removeChangeListener: function removeChangeListener(done) {
+	        this.removeListener('change', done);
+	    }
+	});
+	
+	//
+	_AppDispatcher2.default.register(function (payload) {
+	    //
+	    var action = payload.action;
+	    //
+	    switch (action.actionType) {
+	        //
+	        case _TradeConstants2.default.GET_BOOK_TRADES_RESPONSE:
+	            loadBookTrades(action.data);
+	            TradeStore.emitChange();
+	            break;
+	        case _TradeConstants2.default.UPDATE_TRADE_ACTION:
+	            updateTradeAction(action.data);
+	            TradeStore.emitChange();
+	            break;
+	        default:
+	            break;
+	    }
+	    return true;
+	});
+	
+	//
+	module.exports = TradeStore;
+
+/***/ },
+/* 572 */
+/*!*****************************************!*\
+  !*** ./src/constants/TradeConstants.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _keyMirror = __webpack_require__(/*! fbjs/lib/keyMirror */ 12);
+	
+	var _keyMirror2 = _interopRequireDefault(_keyMirror);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = (0, _keyMirror2.default)({
+	    GET_BOOK_TRADES: null,
+	    GET_BOOK_TRADES_RESPONSE: null,
+	    UPDATE_TRADE_ACTION: null,
+	    SAVE_TRADE_ACTION: null,
+	    SAVE_TRADE_ACTION_RESPONSE: null
+	}); // constants/TradeConstants.js
+
+/***/ },
+/* 573 */
+/*!*************************************!*\
+  !*** ./src/actions/TradeActions.js ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _AppDispatcher = __webpack_require__(/*! ../dispatcher/AppDispatcher */ 4);
+	
+	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
+	
+	var _TradeAPI = __webpack_require__(/*! ../utils/TradeAPI */ 574);
+	
+	var _TradeAPI2 = _interopRequireDefault(_TradeAPI);
+	
+	var _TradeConstants = __webpack_require__(/*! ../constants/TradeConstants */ 572);
+	
+	var _TradeConstants2 = _interopRequireDefault(_TradeConstants);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TradeActions = {
+	    // Get Book Trades
+	    getBookTrades: function getBookTrades(email) {
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _TradeConstants2.default.GET_BOOK_TRADES
+	        });
+	        //
+	        _TradeAPI2.default.getBookTrades(email);
+	    },
+	    // Update action
+	    updateTradeAction: function updateTradeAction(tradeAction) {
+	        //
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _TradeConstants2.default.UPDATE_TRADE_ACTION,
+	            data: tradeAction
+	        });
+	    },
+	    // Save Trade action
+	    saveTradeAction: function saveTradeAction(tradeAction) {
+	        //
+	        _AppDispatcher2.default.handleAction({
+	            actionType: _TradeConstants2.default.SAVE_TRADE_ACTION,
+	            data: tradeAction
+	        });
+	        //
+	        _TradeAPI2.default.saveTradeAction(tradeAction);
+	    }
+	}; // actions/TradeActions.js
+	
+	module.exports = TradeActions;
+
+/***/ },
+/* 574 */
+/*!*******************************!*\
+  !*** ./src/utils/TradeAPI.js ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _TradeServerActions = __webpack_require__(/*! ../actions/TradeServerActions */ 575);
+	
+	var _TradeServerActions2 = _interopRequireDefault(_TradeServerActions);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// utils/TradeAPI.js
+	
+	var request = __webpack_require__(/*! superagent */ 13);
+	
+	var TradeAPI = {
+	    // Get Book Trades
+	    getBookTrades: function getBookTrades(email) {
+	        //
+	        request.get('/api/books/trade').end(function (err, result) {
+	            //
+	            if (err) throw err;
+	            //
+	            _TradeServerActions2.default.getBookTrades(result.body.data);
+	        });
+	    },
+	    // Save Trade Action
+	    saveTradeAction: function saveTradeAction(tradeAction) {
+	        //
+	        request.post('/api/books/trade/update').send({ tradeAction: tradeAction }).end(function (err, result) {
+	            //
+	            if (err) throw err;
+	            //
+	            _TradeServerActions2.default.saveTradeAction(result.body.data);
+	        });
+	    }
+	};
+	
+	module.exports = TradeAPI;
+
+/***/ },
+/* 575 */
+/*!*******************************************!*\
+  !*** ./src/actions/TradeServerActions.js ***!
+  \*******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _AppDispatcher = __webpack_require__(/*! ../dispatcher/AppDispatcher */ 4);
+	
+	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
+	
+	var _TradeConstants = __webpack_require__(/*! ../constants/TradeConstants */ 572);
+	
+	var _TradeConstants2 = _interopRequireDefault(_TradeConstants);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// actions/TradeServerActions.js
+	
+	var TradeServerActions = {
+	    // Get Book Trades
+	    getBookTrades: function getBookTrades(data) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _TradeConstants2.default.GET_BOOK_TRADES_RESPONSE,
+	            data: data
+	        });
+	    },
+	    //
+	    saveTradeAction: function saveTradeAction(data) {
+	        _AppDispatcher2.default.handleServerAction({
+	            actionType: _TradeConstants2.default.SAVE_TRADE_ACTION_RESPONSE,
+	            data: data
+	        });
+	    }
+	};
+	
+	module.exports = TradeServerActions;
 
 /***/ }
 /******/ ]);

@@ -3,6 +3,14 @@
 import RaisedButton from 'material-ui/RaisedButton'
 import React from 'react'
 
+// Styles
+const styles = {
+    div: {
+            // background: 'url('+'http://cdn.mhpbooks.com/uploads/2015/06/books.jpg'+')',
+            // backgroundSize: 'cover'
+    }
+}
+
 //
 var Home = React.createClass({
     //
@@ -23,7 +31,7 @@ var Home = React.createClass({
     render: function() {
         //
         return (
-            <div>
+            <div style={styles.div}>
                 <p>Trade your books like never before</p>
                 <RaisedButton label='Login' primary={true} onTouchTap={this.handleLogin} />
                 <RaisedButton label='SignUp' secondary={true} onTouchTap={this.handleRegister} />

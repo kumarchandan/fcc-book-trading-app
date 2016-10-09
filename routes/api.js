@@ -16,6 +16,7 @@ router.get('/books/trade', query.getBookTrades)
 router.post('/books/add', update.addBook)
 router.post('/books/remove', update.removeBook)
 router.post('/books/request', update.requestBook)
+router.post('/books/trade/update', update.saveTradeAction)
 //
 router.post('/user/update', update.updateUserProfile)
 

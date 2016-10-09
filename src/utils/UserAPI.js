@@ -11,10 +11,7 @@ var UserAPI = {
             //
             if(err) throw err
             //
-            if(result.body.msg) {
-                // Msg for Snackbar
-                UserServerActions.registerUser(result.body.msg)
-            }
+            UserServerActions.registerUser(result.body.data)
         })
     },
     // Login
@@ -24,9 +21,7 @@ var UserAPI = {
             //
             if(err) throw err
             //
-            if(result.body.msg) {
-                UserServerActions.login(result.body.msg)
-            }
+            UserServerActions.login(result.body.data)
         })
     },
     //
@@ -61,7 +56,7 @@ var UserAPI = {
             //
             if(err) throw err
             //
-            UserServerActions.updateUserProfile(result.body.msg)
+            UserServerActions.updateUserProfile(result.body.data)
         })
     }
 }

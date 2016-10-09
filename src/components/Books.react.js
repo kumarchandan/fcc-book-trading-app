@@ -15,6 +15,8 @@ import React from 'react'
 import RightIcon from 'material-ui/svg-icons/navigation/chevron-right'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
+import TradeActions from '../actions/TradeActions'
+import TradeStore from '../stores/TradeStore'
 import { Tab, Tabs } from 'material-ui/Tabs'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
 import UserActions from '../actions/UserActions'
@@ -33,7 +35,7 @@ function getFromStore() {
     return {
         allBooks: BookStore.getAllBooks(),
         booksList: BookStore.getBooks(),
-        bookTrades: BookStore.getBookTrades(),
+        bookTrades: TradeStore.getBookTrades(),
         msg: BookStore.getBookMsg(),
         mybooks: BookStore.getMyBooks()
     }
@@ -85,14 +87,16 @@ var Books = React.createClass({
         // Load Initial data
         BookActions.getAllBooks()
         BookActions.getMyBooks()
-        BookActions.getBookTrades()
+        TradeActions.getBookTrades()
         //
         this.inpAddBook.focus()
         BookStore.addChangeListener(this._onChange)
+        TradeStore.addChangeListener(this._onChange)
     },
     //
     componentWillUnmount: function() {
         BookStore.removeChangeListener(this._onChange)
+        TradeStore.removeChangeListener(this._onChange)
     },
     //
     render: function() {

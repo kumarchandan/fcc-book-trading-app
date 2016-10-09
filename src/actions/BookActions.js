@@ -67,14 +67,6 @@ var BookActions = {
         }
         //
         BookAPI.requestBook(tData)
-    },
-    // Get Book Trades
-    getBookTrades: function(email) {
-        AppDispatcher.handleAction({
-            actionType: BookConstants.GET_BOOK_TRADES
-        })
-        //
-        BookAPI.getBookTrades(email)
     }
 }
 

@@ -20,7 +20,7 @@ var UserSchema = new Schema({
             },
             action: {
                 type: String,
-                default: 'Pending'  // Approved, Pending, Rejected
+                default: 'Pending'  // Accepted, Pending, Rejected
             },
             timestamp: {
                 type: Date,
@@ -41,7 +41,7 @@ var UserSchema = new Schema({
             },
             action: {
                 type: String,
-                default: 'Pending'  // Approved, Pending, Rejected
+                default: 'Pending'  // Accepted, Pending, Rejected
             },
             timestamp: {
                 type: Date,

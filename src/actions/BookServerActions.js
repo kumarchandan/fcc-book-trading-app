@@ -39,13 +39,6 @@ var BookServerActions = {
             data: data
         })
     },
-    // Get Book Trades
-    getBookTrades: function(data) {
-        AppDispatcher.handleServerAction({
-            actionType: BookConstants.GET_BOOK_TRADES_RESPONSE,
-            data: data
-        })
-    },
     // Request Book
     requestBook: function(data) {
         AppDispatcher.handleServerAction({

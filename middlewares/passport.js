@@ -20,9 +20,11 @@ module.exports = function(passport) {
             //
             if(user) {  // User found
                 return done(null, false, {
-                    msg: {
-                        text: 'Email already registered',
-                        severity: 'E'
+                    data: {
+                        msg: {
+                            text: 'Email already registered',
+                            severity: 'E'
+                        }
                     }
                 })
                 //
@@ -38,9 +40,11 @@ module.exports = function(passport) {
                     if(err) throw err
                     //
                     return done(null, user, {
-                        msg: {
-                            text: 'User registered successfully',
-                            severity: 'S'   // success
+                        data: {
+                            msg: {
+                                text: 'User registered successfully',
+                                severity: 'S'   // success
+                            }
                         }
                     })
                 })
@@ -63,26 +67,32 @@ module.exports = function(passport) {
             //
             if(!user) {
                 return done(null, false, {
-                    msg: {
-                        text: 'email not registered!',
-                        severity: 'E'
+                    data: {
+                         msg: {
+                            text: 'email not registered!',
+                            severity: 'E'
+                        }
                     }
                 })
             }
             //
             if(!(user.password === password)) {
                 return done(null, false, {
-                    msg: {
-                        text: 'wrong password pal!',
-                        severity: 'E'
+                    data: {
+                         msg: {
+                            text: 'wrong password pal!',
+                            severity: 'E'
+                        }
                     }
                 })
             }
             //
             return done(null, user, {
-                msg: {
-                    text: 'Login successfully!',
-                    severity: 'S'
+                data: {
+                    msg: {
+                        text: 'Login successfully!',
+                        severity: 'S'
+                    }
                 }
             })
         })
