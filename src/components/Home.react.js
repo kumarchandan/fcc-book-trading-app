@@ -6,8 +6,15 @@ import React from 'react'
 // Styles
 const styles = {
     div: {
-            // background: 'url('+'http://cdn.mhpbooks.com/uploads/2015/06/books.jpg'+')',
-            // backgroundSize: 'cover'
+            background: 'images/cat-book.jpg',
+            backgroundSize: 'cover'
+    },
+    span: {
+        position: 'absolute',
+        textAlign: 'center',
+        right: 0,
+        bottom: 0,
+        left: 0,
     }
 }
 
@@ -35,6 +42,7 @@ var Home = React.createClass({
                 <p>Trade your books like never before</p>
                 <RaisedButton label='Login' primary={true} onTouchTap={this.handleLogin} />
                 <RaisedButton label='SignUp' secondary={true} onTouchTap={this.handleRegister} />
+                <span style={styles.span}><a href='https://github.com/kumarchandan/fcc-book-trading-app' target='_blank'>@github</a></span>
             </div>
         )
     }

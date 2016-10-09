@@ -1,5 +1,6 @@
 // components/Login.react.js
 
+import FlatButton from 'material-ui/FlatButton'
 import Formsy from 'formsy-react'
 import FormsyText from 'formsy-material-ui/lib/FormsyText'
 import { Link } from 'react-router'
@@ -96,7 +97,7 @@ var Login = React.createClass({
                             <RaisedButton type='submit' primary={true} label='Submit' style={styles.submitStyle} disabled={!this.state.canSubmit} />
                             <br />
                             <br />
-                            Not registered? <Link to='/signup'>SignUp</Link>
+                            Not registered? <Link to='/signup'><FlatButton label='SignUp' primary={true} /></Link>
                         </Formsy.Form>
                 </Paper>
                 <Snackbar open={this.state.msg.text === ''? false: true} message={this.state.msg.text} autoHideDuration={3000} />

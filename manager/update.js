@@ -2,6 +2,7 @@
 
 var BookModel = require('../models/book')
 var mongoose = require('mongoose')
+var ObjectID = require('mongodb').ObjectID
 var UserModel = require('../models/user')
 
 mongoose.Promise = require('bluebird')
@@ -79,6 +80,8 @@ function removeBook(req, res, next) {
 function requestBook(req, res, next) {
     //
     var tData = req.body.tData  // _id, bookId, title, cover, owner, renter
+    // Common _id for owner-incomingRequests and sender-outgoingRequests to make them sync
+    var _id = new ObjectID()
 
     // Check if renter already requested the book
     UserModel.findOne({
@@ -102,6 +105,7 @@ function requestBook(req, res, next) {
             UserModel.update({ email: tData.owner }, {
                 $push: {
                     incomingRequests: {
+                        _id: _id,
                         sender: tData.renter,
                         bookObjId: tData._id,
                         bookId: tData.bookId,
@@ -116,6 +120,7 @@ function requestBook(req, res, next) {
                     UserModel.update({ email: tData.renter }, {
                         $push: {
                             outgoingRequests: {
+                                _id: _id,
                                 receiver: tData.owner,
                                 bookObjId: tData._id,
                                 bookId: tData.bookId,
@@ -198,26 +203,41 @@ function updateUserProfile(req, res, next) {
 // Save Trade Action
 function saveTradeAction(req, res, next) {
     //
-    var tradeAction = req.body.tradeAction      // _id and action
-    var email = req.user ? req.user.email : null
+    var tradeAction = req.body.tradeAction          // _id, action and sender
+    var owner = req.user ? req.user.email : null    // owner email
 
     // Get
-    UserModel.update({ email: email, 'incomingRequests._id': tradeAction._id }, {
+    UserModel.update({ email: owner, 'incomingRequests._id': tradeAction._id }, {
         $set: {
-            'incomingRequests.$.action': tradeAction.action
+            'incomingRequests.$.action': tradeAction.action,
+            'incomingRequests.$.status': 'Finished'
         }
-    }, function(err, doc) {
-        //
-        if(!err) {
-            res.status(200).json({
-                data: {
-                    msg: {
-                        text: 'Action updated successfully!',
-                        severity: 'S'
-                    }
+    })
+    .then(function(doc) {
+        if(doc) {
+            // Now update outgoingRequests of sender
+            UserModel.update({ email: tradeAction.sender, 'outgoingRequests._id': tradeAction._id }, {
+                $set: {
+                    'outgoingRequests.$.action': tradeAction.action,
+                    'outgoingRequests.$.status': 'Finished'
                 }
             })
-        } else {
+            .then(function(doc) {
+                if(doc) {
+                    res.status(200).json({
+                        data: {
+                            msg: {
+                                text: 'Action updated successfully!',
+                                severity: 'S'
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    })
+    .catch(function(err) {
+        if(err) {
             res.status(200).json({
                 data: {
                     msg: {

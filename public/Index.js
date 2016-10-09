@@ -353,7 +353,7 @@
 	                _react2.default.createElement(
 	                    _Toolbar.ToolbarGroup,
 	                    null,
-	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Add your book..', ref: function ref(_ref) {
+	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Add your book..MYBOOKS tab', ref: function ref(_ref) {
 	                            return _this.inpAddBook = _ref;
 	                        }, onKeyDown: this.handleKeyDown }),
 	                    _react2.default.createElement(
@@ -32029,11 +32029,11 @@
 	
 	var _TradeActions2 = _interopRequireDefault(_TradeActions);
 	
+	var _Tabs = __webpack_require__(/*! material-ui/Tabs */ 280);
+	
 	var _Table = __webpack_require__(/*! material-ui/Table */ 248);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	// components/Books.MyTrades.react.js
 	
 	var MyTrades = _react2.default.createClass({
 	    displayName: 'MyTrades',
@@ -32049,14 +32049,17 @@
 	        _TradeActions2.default.updateTradeAction(tradeAction);
 	    },
 	    // Save
-	    _saveTradeAction: function _saveTradeAction(_id, action) {
+	    _saveTradeAction: function _saveTradeAction(_id, action, sender) {
 	        //
 	        var tradeAction = {
 	            _id: _id,
-	            action: action
+	            action: action,
+	            sender: sender
 	        };
 	        //
-	        _TradeActions2.default.saveTradeAction(tradeAction);
+	        if (tradeAction.action !== 'Pending') {
+	            _TradeActions2.default.saveTradeAction(tradeAction);
+	        }
 	    },
 	    //
 	    render: function render() {
@@ -32069,9 +32072,9 @@
 	            return null;
 	        }
 	        //
-	        var rows = [];
+	        var incomingRows = [];
 	        this.props.bookTrades.incomingRequests.map(function (booktrade, i) {
-	            return rows.push(_react2.default.createElement(
+	            return incomingRows.push(_react2.default.createElement(
 	                _Table.TableRow,
 	                { key: booktrade._id },
 	                _react2.default.createElement(
@@ -32106,58 +32109,139 @@
 	                    _Table.TableRowColumn,
 	                    null,
 	                    _react2.default.createElement(_FlatButton2.default, { label: 'SAVE', primary: true, onTouchTap: function onTouchTap() {
-	                            return _this._saveTradeAction(booktrade._id, booktrade.action);
+	                            return _this._saveTradeAction(booktrade._id, booktrade.action, booktrade.sender);
 	                        } })
 	                )
 	            ));
 	        }, this);
+	
 	        //
+	        var outgoingRows = [];
+	        this.props.bookTrades.outgoingRequests.map(function (booktrade, i) {
+	            return outgoingRows.push(_react2.default.createElement(
+	                _Table.TableRow,
+	                { key: booktrade._id },
+	                _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    booktrade.receiver
+	                ),
+	                _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    booktrade.bookTitle
+	                ),
+	                _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    booktrade.status
+	                ),
+	                _react2.default.createElement(
+	                    _Table.TableRowColumn,
+	                    null,
+	                    booktrade.action
+	                )
+	            ));
+	        }, this);
+	
+	        // Return Trading Status Tabs
 	        return _react2.default.createElement(
-	            _Table.Table,
+	            _Tabs.Tabs,
 	            null,
 	            _react2.default.createElement(
-	                _Table.TableHeader,
-	                null,
+	                _Tabs.Tab,
+	                { label: 'Incoming' },
 	                _react2.default.createElement(
-	                    _Table.TableRow,
+	                    _Table.Table,
 	                    null,
 	                    _react2.default.createElement(
-	                        _Table.TableHeaderColumn,
+	                        _Table.TableHeader,
 	                        null,
-	                        'Requester'
+	                        _react2.default.createElement(
+	                            _Table.TableRow,
+	                            null,
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Requester'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Title'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Status'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Progress'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Action'
+	                            )
+	                        )
 	                    ),
 	                    _react2.default.createElement(
-	                        _Table.TableHeaderColumn,
+	                        _Table.TableBody,
 	                        null,
-	                        'Title'
-	                    ),
-	                    _react2.default.createElement(
-	                        _Table.TableHeaderColumn,
-	                        null,
-	                        'Status'
-	                    ),
-	                    _react2.default.createElement(
-	                        _Table.TableHeaderColumn,
-	                        null,
-	                        'Progress'
-	                    ),
-	                    _react2.default.createElement(
-	                        _Table.TableHeaderColumn,
-	                        null,
-	                        'Action'
+	                        incomingRows
 	                    )
 	                )
 	            ),
 	            _react2.default.createElement(
-	                _Table.TableBody,
-	                null,
-	                rows
+	                _Tabs.Tab,
+	                { label: 'Outgoing' },
+	                _react2.default.createElement(
+	                    _Table.Table,
+	                    null,
+	                    _react2.default.createElement(
+	                        _Table.TableHeader,
+	                        null,
+	                        _react2.default.createElement(
+	                            _Table.TableRow,
+	                            null,
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Receiver'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Title'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Status'
+	                            ),
+	                            _react2.default.createElement(
+	                                _Table.TableHeaderColumn,
+	                                null,
+	                                'Progress'
+	                            )
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        _Table.TableBody,
+	                        null,
+	                        outgoingRows
+	                    )
+	                )
 	            )
 	        );
 	    }
 	});
 	
 	//
+	// components/Books.MyTrades.react.js
+	
 	module.exports = MyTrades;
 
 /***/ },
@@ -39240,8 +39324,15 @@
 	
 	var styles = {
 	    div: {
-	        // background: 'url('+'http://cdn.mhpbooks.com/uploads/2015/06/books.jpg'+')',
-	        // backgroundSize: 'cover'
+	        background: 'images/cat-book.jpg',
+	        backgroundSize: 'cover'
+	    },
+	    span: {
+	        position: 'absolute',
+	        textAlign: 'center',
+	        right: 0,
+	        bottom: 0,
+	        left: 0
 	    }
 	};
 	
@@ -39275,7 +39366,16 @@
 	                'Trade your books like never before'
 	            ),
 	            _react2.default.createElement(_RaisedButton2.default, { label: 'Login', primary: true, onTouchTap: this.handleLogin }),
-	            _react2.default.createElement(_RaisedButton2.default, { label: 'SignUp', secondary: true, onTouchTap: this.handleRegister })
+	            _react2.default.createElement(_RaisedButton2.default, { label: 'SignUp', secondary: true, onTouchTap: this.handleRegister }),
+	            _react2.default.createElement(
+	                'span',
+	                { style: styles.span },
+	                _react2.default.createElement(
+	                    'a',
+	                    { href: 'https://github.com/kumarchandan/fcc-book-trading-app', target: '_blank' },
+	                    '@github'
+	                )
+	            )
 	        );
 	    }
 	});
@@ -39940,7 +40040,7 @@
 	                                _react2.default.createElement(
 	                                    _reactRouter.Link,
 	                                    { to: '/profile' },
-	                                    'Profile'
+	                                    _react2.default.createElement(_FlatButton2.default, { label: 'Profile', primary: true })
 	                                )
 	                            ),
 	                            _react2.default.createElement(
@@ -39949,7 +40049,7 @@
 	                                _react2.default.createElement(
 	                                    _reactRouter.Link,
 	                                    { to: '/books' },
-	                                    'Books'
+	                                    _react2.default.createElement(_FlatButton2.default, { label: 'Books', primary: true })
 	                                )
 	                            )
 	                        ) : null
@@ -58452,6 +58552,10 @@
 
 	'use strict';
 	
+	var _FlatButton = __webpack_require__(/*! material-ui/FlatButton */ 271);
+	
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+	
 	var _formsyReact = __webpack_require__(/*! formsy-react */ 554);
 	
 	var _formsyReact2 = _interopRequireDefault(_formsyReact);
@@ -58489,6 +58593,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
+	// components/Login.react.js
+	
 	var styles = {
 	    paperStyle: {
 	        margin: 'auto',
@@ -58501,8 +58607,6 @@
 	};
 	
 	//
-	// components/Login.react.js
-	
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
@@ -58598,7 +58702,7 @@
 	                    _react2.default.createElement(
 	                        _reactRouter.Link,
 	                        { to: '/signup' },
-	                        'SignUp'
+	                        _react2.default.createElement(_FlatButton2.default, { label: 'SignUp', primary: true })
 	                    )
 	                )
 	            ),
@@ -59726,6 +59830,10 @@
 
 	'use strict';
 	
+	var _FlatButton = __webpack_require__(/*! material-ui/FlatButton */ 271);
+	
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+	
 	var _formsyReact = __webpack_require__(/*! formsy-react */ 554);
 	
 	var _formsyReact2 = _interopRequireDefault(_formsyReact);
@@ -59763,6 +59871,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
+	// components/Signup.react.js
+	
 	var styles = {
 	    paperStyle: {
 	        margin: 'auto',
@@ -59775,8 +59885,6 @@
 	};
 	
 	//
-	// components/Signup.react.js
-	
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
@@ -59886,7 +59994,7 @@
 	                    _react2.default.createElement(
 	                        _reactRouter.Link,
 	                        { to: '/login' },
-	                        'Login'
+	                        _react2.default.createElement(_FlatButton2.default, { label: 'Login', primary: true })
 	                    )
 	                )
 	            ),
