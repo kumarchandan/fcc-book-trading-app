@@ -46,8 +46,8 @@ var MyTrades = React.createClass({
                 <TableRowColumn>
                     <DropDownMenu value={booktrade.action} onChange={ (event, key, value) => (this._handleChange(booktrade._id, event, key, value)) }>
                         <MenuItem value={'Pending'} primaryText='Pending' />
-                        <MenuItem value={'Accept'} primaryText='Accept' />
-                        <MenuItem value={'Reject'} primaryText='Reject' />
+                        <MenuItem value={'Accepted'} primaryText='Accepted' />
+                        <MenuItem value={'Rejected'} primaryText='Rejected' />
                     </DropDownMenu>
                 </TableRowColumn>
                 <TableRowColumn>

@@ -9,8 +9,6 @@ var path = require('path');
 var passport = require('passport')
 var session = require('express-session')
 //
-var socket = require('socket.io')
-//
 var mongoURL = require('./config/keys').db.mongoURL
 var mongoose = require('mongoose')
 // Connect to MongoDB
@@ -18,9 +16,7 @@ mongoose.connect(mongoURL)
 
 // Express
 var app = express();
-// socket
-var io = socket()
-app.io = io
+
 // passport setup
 require('./middlewares/passport')(passport)
 

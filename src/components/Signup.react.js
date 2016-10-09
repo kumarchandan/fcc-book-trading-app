@@ -2,6 +2,7 @@
 
 import Formsy from 'formsy-react'
 import FormsyText from 'formsy-material-ui/lib/FormsyText'
+import { Link } from 'react-router'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import React from 'react'
@@ -56,7 +57,6 @@ var Signup = React.createClass({
         })
     },
     submitForm: function(data) {
-        console.log(JSON.stringify(data))
         UserActions.registerUser(data)
     },
     notifyFormError: function(data) {
@@ -104,6 +104,9 @@ var Signup = React.createClass({
                         }} validationError='Are you testing app or you are just dumb! does not match with password field' required />
                         <br />
                         <RaisedButton type='submit' primary={true} label='Submit' style={styles.submitStyle} disabled={!this.state.canSubmit} />
+                        <br />
+                        <br />
+                        Already registered? <Link to='/login'>Login</Link>
                     </Formsy.Form>
                 </Paper>
                 <Snackbar open={this.state.msg.text === ''? false: true} message={this.state.msg.text} autoHideDuration={3000} />

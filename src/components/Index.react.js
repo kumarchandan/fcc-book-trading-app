@@ -96,7 +96,7 @@ var NavigationBar = React.createClass({
                                     <Avatar>{this.state.userProfile.username.split('')[0].toUpperCase()}</Avatar> {this.state.userProfile.detailedInfo.displayName ? this.state.userProfile.detailedInfo.displayName : this.state.userProfile.username}
                                 </MenuItem>
                                 <MenuItem onTouchTap={this._handleDrawerToggle}><Link to='/profile'>Profile</Link></MenuItem>
-                                <MenuItem onTouchTap={this._handleDrawerToggle}>App Settings</MenuItem>
+                                <MenuItem onTouchTap={this._handleDrawerToggle}><Link to='/books'>Books</Link></MenuItem>
                             </Menu>
                         : null
                         }

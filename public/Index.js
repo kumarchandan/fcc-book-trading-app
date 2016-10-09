@@ -353,7 +353,7 @@
 	                _react2.default.createElement(
 	                    _Toolbar.ToolbarGroup,
 	                    null,
-	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Search your book..', ref: function ref(_ref) {
+	                    _react2.default.createElement(_TextField2.default, { label: 'My Books', hintText: 'Add your book..', ref: function ref(_ref) {
 	                            return _this.inpAddBook = _ref;
 	                        }, onKeyDown: this.handleKeyDown }),
 	                    _react2.default.createElement(
@@ -32098,8 +32098,8 @@
 	                                return _this._handleChange(booktrade._id, event, key, value);
 	                            } },
 	                        _react2.default.createElement(_MenuItem2.default, { value: 'Pending', primaryText: 'Pending' }),
-	                        _react2.default.createElement(_MenuItem2.default, { value: 'Accept', primaryText: 'Accept' }),
-	                        _react2.default.createElement(_MenuItem2.default, { value: 'Reject', primaryText: 'Reject' })
+	                        _react2.default.createElement(_MenuItem2.default, { value: 'Accepted', primaryText: 'Accepted' }),
+	                        _react2.default.createElement(_MenuItem2.default, { value: 'Rejected', primaryText: 'Rejected' })
 	                    )
 	                ),
 	                _react2.default.createElement(
@@ -39946,7 +39946,11 @@
 	                            _react2.default.createElement(
 	                                _MenuItem2.default,
 	                                { onTouchTap: this._handleDrawerToggle },
-	                                'App Settings'
+	                                _react2.default.createElement(
+	                                    _reactRouter.Link,
+	                                    { to: '/books' },
+	                                    'Books'
+	                                )
 	                            )
 	                        ) : null
 	                    )
@@ -58456,6 +58460,8 @@
 	
 	var _FormsyText2 = _interopRequireDefault(_FormsyText);
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 330);
+	
 	var _Paper = __webpack_require__(/*! material-ui/Paper */ 256);
 	
 	var _Paper2 = _interopRequireDefault(_Paper);
@@ -58483,8 +58489,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
-	// components/Login.react.js
-	
 	var styles = {
 	    paperStyle: {
 	        margin: 'auto',
@@ -58497,6 +58501,8 @@
 	};
 	
 	//
+	// components/Login.react.js
+	
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
@@ -58585,7 +58591,15 @@
 	                            return _this.password = _ref2;
 	                        }, type: 'password', required: true }),
 	                    _react2.default.createElement('br', null),
-	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit })
+	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit }),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('br', null),
+	                    'Not registered? ',
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/signup' },
+	                        'SignUp'
+	                    )
 	                )
 	            ),
 	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg.text === '' ? false : true, message: this.state.msg.text, autoHideDuration: 3000 })
@@ -59720,6 +59734,8 @@
 	
 	var _FormsyText2 = _interopRequireDefault(_FormsyText);
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 330);
+	
 	var _Paper = __webpack_require__(/*! material-ui/Paper */ 256);
 	
 	var _Paper2 = _interopRequireDefault(_Paper);
@@ -59747,8 +59763,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// Styles
-	// components/Signup.react.js
-	
 	var styles = {
 	    paperStyle: {
 	        margin: 'auto',
@@ -59761,6 +59775,8 @@
 	};
 	
 	//
+	// components/Signup.react.js
+	
 	function getUserStore() {
 	    return {
 	        canSubmit: false,
@@ -59797,7 +59813,6 @@
 	        });
 	    },
 	    submitForm: function submitForm(data) {
-	        console.log(JSON.stringify(data));
 	        _UserActions2.default.registerUser(data);
 	    },
 	    notifyFormError: function notifyFormError(data) {
@@ -59864,7 +59879,15 @@
 	                            }
 	                        }, validationError: 'Are you testing app or you are just dumb! does not match with password field', required: true }),
 	                    _react2.default.createElement('br', null),
-	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit })
+	                    _react2.default.createElement(_RaisedButton2.default, { type: 'submit', primary: true, label: 'Submit', style: styles.submitStyle, disabled: !this.state.canSubmit }),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('br', null),
+	                    'Already registered? ',
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/login' },
+	                        'Login'
+	                    )
 	                )
 	            ),
 	            _react2.default.createElement(_Snackbar2.default, { open: this.state.msg.text === '' ? false : true, message: this.state.msg.text, autoHideDuration: 3000 })

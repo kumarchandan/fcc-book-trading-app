@@ -126,7 +126,7 @@ var Books = React.createClass({
 
                 <Toolbar style={styles.toolbar}>
                     <ToolbarGroup>
-                        <TextField label='My Books' hintText='Search your book..' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} />
+                        <TextField label='My Books' hintText='Add your book..' ref={ (ref) => this.inpAddBook = ref } onKeyDown={this.handleKeyDown} />
                         <IconButton onTouchTap={this.clearSearch}>
                             <ClearIcon />
                         </IconButton>

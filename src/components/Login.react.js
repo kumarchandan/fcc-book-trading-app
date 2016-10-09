@@ -2,6 +2,7 @@
 
 import Formsy from 'formsy-react'
 import FormsyText from 'formsy-material-ui/lib/FormsyText'
+import { Link } from 'react-router'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import React from 'react'
@@ -93,6 +94,9 @@ var Login = React.createClass({
                             <FormsyText name='password' hintText='password' ref={ (ref) => this.password = ref } type='password' required />
                             <br />
                             <RaisedButton type='submit' primary={true} label='Submit' style={styles.submitStyle} disabled={!this.state.canSubmit} />
+                            <br />
+                            <br />
+                            Not registered? <Link to='/signup'>SignUp</Link>
                         </Formsy.Form>
                 </Paper>
                 <Snackbar open={this.state.msg.text === ''? false: true} message={this.state.msg.text} autoHideDuration={3000} />
